@@ -3,9 +3,14 @@ CC      := cc
 CFLAGS  := -Wall -Wextra -Werror
 INCLUDES    := -I./includes -I./libs/libft/includes
 
-SRCS    := Shell_project.c signals.c executor_path.c \
-		  cleaners.c
-SRCS_PATHS   := $(addprefix src/, $(SRCS))
+SRCS    := main.c executor.c executor_path.c signals.c cleaners.c \
+		   enviroment.c builtins.c cd.c\
+		   exit.c
+
+SRC_DIRS := src src/exec src/signals src/utils src/builtins
+
+VPATH := $(SRC_DIRS)
+
 OBJS    := $(addprefix obj/, $(SRCS:.c=.o))
 
 
@@ -28,9 +33,8 @@ $(LIBFT):
 	@echo "$(GREEN)Compiling libft...$(RESET)"
 	@make -C $(LIBFT_DIR)
 
-# Compile object files
-obj/%.o: src/%.c | obj
-
+# Compile object files from any source directory
+obj/%.o: %.c | obj
 	@echo "Compiling $<..."
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
