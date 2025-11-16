@@ -217,3 +217,5 @@ make re       # Recompilar todo
 ---
 
 *Última actualización: 16 de Noviembre, 2025*
+
+/* Dejo subido el parser, está practicamente completo, lo único que hace falta es hacer las funciones de limpieza*/
