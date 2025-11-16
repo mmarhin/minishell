@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/16 00:01:46 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/11/16 22:12:30 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_cmd
 typedef struct s_shell
 {
 	char	**envp;
-	int		last_exit_code;
+	int		exit_status;
 }	t_shell;
 
 extern volatile sig_atomic_t	g_sig;
@@ -103,5 +103,38 @@ void	ft_export(char **args, t_shell *shell);
 void	ft_unset(char **args, t_shell *shell);
 */
 void	ft_exit(char **args, t_shell *shell);
+
+/* tokenizer/tokenizer.c */
+t_token	*tokenize(char *input);
+
+/* tokenizer/token_utils.c */
+t_token	*create_token(t_token_type type, char *value);
+void	add_token(t_token **head, t_token *new_token);
+void	free_tokens(t_token *head);
+void	print_tokens(t_token *head);
+
+/* tokenizer/tokenizator_helpers.c */
+int		is_space(char c);
+int		is_operator(char c);
+void	skip_spaces(char **str);
+char	*extract_word(char **str);
+int		is_quote(char c);
+char	*extract_quoted_string(char **str);
+
+/* tokenizer/tokenizator_operators.c */
+t_token	*create_operator_token(char **str);
+t_token	*handle_operator(char **input, t_token *head);
+t_token	*handle_word(char **input, t_token *head);
+
+
+/* parser/parser.c */
+t_cmd		*parse(t_token *tokens, t_shell *shell);
+
+/* parser/parser_utils.c */
+t_cmd		*cmd_init(void);
+t_redir		*redir_init(t_token_type type);
+void		add_arg(t_cmd *aux, t_token *tokens);
+void		add_redir_to_cmd(t_cmd *cmd, t_redir *redir);
+int			is_redir(t_token_type type);
 
 #endif
