@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:45:22 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/02 22:45:22 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/11/16 22:16:04 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,13 @@ void	exec_command(char **args, int background, t_shell *shell)
 		exit(EXIT_FAILURE);
 	}
 	if (background == 0)
+	{
 		waitpid(pid, &status, WUNTRACED);
+		if (WIFEXITED(status))
+			shell->exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			shell->exit_status = 128 + WTERMSIG(status);
+	}
 	else
 	{
 		printf("Background job running... pid: %d, command: %s\n",

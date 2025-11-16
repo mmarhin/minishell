@@ -6,8 +6,13 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:30 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/02 23:01:30 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/11/16 17:12:39 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	ft_echo(char **args, t_shell *shell)
+{
+	
+}
