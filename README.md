@@ -8,6 +8,22 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 
 ## ✅ Progreso Actual
 
+
+| Área                                      | Progreso aproximado |
+|------------------------------------------|----------------------|
+| Bucle principal / core de la shell       | 80%                  |
+| Gestión de entorno (`env`, `export`...)  | 75%                  |
+| Tokenizador / lexer                      | 80%                  |
+| Parser (creación de estructuras de cmds) | 70%                  |
+| Ejecutor (pipes, paths, redirecciones)   | 70%                  |
+| Builtins obligatorios                    | 90%                  |
+| Señales y modo interactivo               | 70%                  |
+| Limpieza de memoria / errores            | 60%                  |
+| Infraestructura (Makefile, includes)     | 85%                  |
+| Libft                                    | 100%                 |
+| Tests, depuración y casos límite         | 40%                  |
+| Bonus                                    | 0% (no iniciado / N/A) |
+
 ### Completado
 
 #### 🔧 Infraestructura Base
@@ -39,20 +55,20 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 ## 🚧 Pendiente de Implementación
 
 ### 📝 Parsing y Tokenización (Prioridad Alta)
-- [ ] Tokenizador (lexer)
-- [ ] Parser de comandos
-- [ ] Manejo de quotes (simples y dobles)
+- [x] Tokenizador (lexer)
+- [x] Parser de comandos
+- [x] Manejo de quotes (simples y dobles)
 - [ ] Expansión de variables `$VAR`
 - [ ] Expansión de `$?` (exit status)
 
 ### 🔨 Builtins
 - [ ] `echo` con opción `-n`
-- [ ] `cd` (con path relativo/absoluto)
+- [x] `cd` (con path relativo/absoluto)
 - [ ] `pwd` (sin opciones)
 - [ ] `export` (sin opciones)
 - [ ] `unset`
 - [ ] `env` (sin opciones ni argumentos)
-- [ ] `exit`
+- [x] `exit`
 
 ### 🔀 Operadores y Redirecciones
 - [ ] Pipes `|`
@@ -70,10 +86,6 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 ---
 
 ## 👥 División de Trabajo (Por Features Completas)
-
-**Estrategia:** Cada uno implementa features completas de principio a fin. Más natural y menos tedioso.
-
----
 
 ### 🟦 Luis - Comandos Simples + Builtins
 
