@@ -3,11 +3,12 @@ CC      := cc
 CFLAGS  := -Wall -Wextra -Werror
 INCLUDES    := -I./includes -I./libs/libft/includes
 
-SRCS    := main.c executor.c executor_path.c signals.c cleaners.c \
-		   enviroment.c builtins.c cd.c\
-		   exit.c
+SRCS    := main.c executor.c executor_path.c redirections.c signals.c cleaners.c \
+		   enviroment.c enviroment_utils.c builtins.c cd.c exit.c \
+		   tokenizator.c token_utils.c tokenizator_helpers.c tokenizator_operators.c \
+		   tokenizator_quotes.c parser.c parser_utils.c parser_args.c
 
-SRC_DIRS := src src/exec src/signals src/utils src/builtins
+SRC_DIRS := src src/exec src/signals src/utils src/builtins src/tokenizator src/parser
 
 VPATH := $(SRC_DIRS)
 

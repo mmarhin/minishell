@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizator_operators.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 13:10:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/11/16 17:18:13 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/14 12:18:01 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

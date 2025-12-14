@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:30 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/16 17:12:39 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/14 12:24:33 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 void	ft_echo(char **args, t_shell *shell)
 {
-	
+	(void)args;
+	(void)shell;
 }
