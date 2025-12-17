@@ -1,0 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_args.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/14 12:00:00 by lanton-m          #+#    #+#             */
+/*   Updated: 2025/12/14 12:26:10 by mamarin-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+static int	count_args(char **args)
+{
+	int	count;
+
+	count = 0;
+	if (args)
+	{
+		while (args[count])
+			count++;
+	}
+	return (count);
+}
+
+void	add_arg(t_cmd *aux, t_token *tokens)
+{
+	char	**new_args;
+	int		i;
+	int		count;
+
+	count = count_args(aux->args);
+	new_args = malloc(sizeof(char *) * (count + 2));
+	if (!new_args)
+		return ;
+	i = 0;
+	while (i < count)
+	{
+		new_args[i] = aux->args[i];
+		i++;
+	}
+	new_args[count] = ft_strdup(tokens->value);
+	if (!new_args[count])
+		return (free(new_args));
+	new_args[count + 1] = NULL;
+	if (aux->args)
+		free(aux->args);
+	aux->args = new_args;
+}

@@ -8,212 +8,168 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 
 ## ✅ Progreso Actual
 
-### Completado
+| Área | Estado |
+|------|--------|
+| Bucle principal / core | ✅ Completo |
+| Tokenizador / lexer | ✅ Completo |
+| Parser | ✅ Completo |
+| Redirecciones (`<`, `>`, `>>`, `<<`) | ✅ Completo |
+| Gestión de entorno | ✅ Completo |
+| Ejecución de comandos externos | ✅ Completo |
+| Señales (SIGINT, SIGQUIT) | ✅ Completo |
+| Builtin: `cd` | ✅ Completo |
+| Builtin: `exit` | ✅ Completo |
+| Builtin: `echo` | 🚧 Pendiente |
+| Builtin: `pwd` | 🚧 Pendiente |
+| Builtin: `env` | 🚧 Pendiente |
+| Builtin: `export` | 🚧 Pendiente |
+| Builtin: `unset` | 🚧 Pendiente |
+| Pipes `\|` | 🚧 Pendiente |
+| Expansión de variables `$VAR` | 🚧 Pendiente |
+| Norminette | ✅ OK |
 
-#### 🔧 Infraestructura Base
-- [x] Estructura del proyecto organizada
-- [x] Makefile funcional
-- [x] Gestión de señales (SIGINT, SIGQUIT)
-- [x] Bucle principal con readline
-- [x] Historial de comandos
+---
 
-#### 🌍 Gestión de Entorno
-- [x] Copia del entorno (`copy_environ`)
-- [x] Obtener variables (`get_env`)
-- [x] Crear/actualizar variables (`set_env`)
-- [x] Eliminar variables (`unset_env`)
-- [x] Liberación de memoria del entorno
+## 🚀 Características Implementadas
 
-#### ⚙️ Ejecución de Comandos
-- [x] Búsqueda de ejecutables en PATH
-- [x] Ejecución de comandos externos con `fork` y `execve`
-- [x] Captura de exit status
-- [x] Gestión básica de procesos
+### ✅ Core del Shell
+- Bucle principal con `readline`
+- Historial de comandos
+- Prompt personalizado `minishell> `
+- Gestión de señales en modo interactivo
 
-#### 🧹 Utilidades
-- [x] Liberación de arrays (`ft_freesplit`)
-- [x] Gestión de memoria
+### ✅ Tokenizador
+- Separación por espacios
+- Detección de operadores (`|`, `<`, `>`, `>>`, `<<`)
+- Manejo de comillas simples y dobles
+- Tokens para palabras y operadores
+
+### ✅ Parser
+- Construcción de lista de comandos (`t_cmd`)
+- Extracción de redirecciones (`t_redir`)
+- Detección de pipes
+- Manejo de errores de sintaxis
+
+### ✅ Redirecciones
+- `<` - Redirección de entrada
+- `>` - Redirección de salida (trunca)
+- `>>` - Redirección de salida (append)
+- `<<` - Heredoc
+
+### ✅ Gestión de Entorno
+- `copy_environ` - Copia del entorno
+- `get_env` - Obtener variable
+- `set_env` - Crear/actualizar variable
+- `unset_env` - Eliminar variable
+
+### ✅ Ejecución
+- Búsqueda de ejecutables en PATH
+- `fork` + `execve`
+- Captura de exit status
+- Soporte para redirecciones en comandos externos
 
 ---
 
 ## 🚧 Pendiente de Implementación
 
-### 📝 Parsing y Tokenización (Prioridad Alta)
-- [ ] Tokenizador (lexer)
-- [ ] Parser de comandos
-- [ ] Manejo de quotes (simples y dobles)
-- [ ] Expansión de variables `$VAR`
-- [ ] Expansión de `$?` (exit status)
-
-### 🔨 Builtins
+### Builtins
 - [ ] `echo` con opción `-n`
-- [ ] `cd` (con path relativo/absoluto)
-- [ ] `pwd` (sin opciones)
-- [ ] `export` (sin opciones)
-- [ ] `unset`
-- [ ] `env` (sin opciones ni argumentos)
-- [ ] `exit`
-
-### 🔀 Operadores y Redirecciones
-- [ ] Pipes `|`
-- [ ] Redirección entrada `<`
-- [ ] Redirección salida `>`
-- [ ] Redirección append `>>`
-- [ ] Heredoc `<<`
-
-### 🎯 Funcionalidades Avanzadas
-- [ ] Manejo de múltiples pipes
-- [ ] Variables de entorno `$VAR` en comandos
-- [ ] Exit status `$?`
-- [ ] CTRL-C, CTRL-D, CTRL-\ según contexto
-
----
-
-## 👥 División de Trabajo (Por Features Completas)
-
-**Estrategia:** Cada uno implementa features completas de principio a fin. Más natural y menos tedioso.
-
----
-
-### 🟦 Luis - Comandos Simples + Builtins
-
-**Feature 1: Parser Simple (Solo comandos sin pipes)**
-- [ ] Crear `src/parsing/simple_parser.c`
-- [ ] Split por espacios y manejo básico de quotes
-- [ ] Expansión de `$VAR` y `$?`
-- [ ] Retornar `char **args` simple
-- [ ] Testing: imprimir arrays parseados
-
-**Feature 2: Todos los Builtins**
-- [ ] `echo` (con `-n`)
 - [ ] `pwd`
 - [ ] `env`
 - [ ] `export`
 - [ ] `unset`
-- [ ] `cd` (actualizar PWD/OLDPWD)
-- [ ] `exit`
-- [ ] Dispatcher en `builtins.c`
 
-**Feature 3: Quotes Completas**
-- [ ] Quotes simples `'sin expansion'`
-- [ ] Quotes dobles `"$VAR expansion"`
-- [ ] Manejo de espacios: `echo "hello world"`
-
-**Testing completo:**
-```bash
-> echo hello $USER
-> echo "test $PWD"
-> pwd
-> cd /tmp
-> export VAR=value
-> unset VAR
-> exit
-```
-
-**Ventajas:** Tienes un minishell funcional SIN pipes ni redirecciones. Puedes probarlo end-to-end.
+### Funcionalidades
+- [ ] Pipes `|` (múltiples comandos)
+- [ ] Expansión de variables `$VAR`
+- [ ] Exit status `$?`
 
 ---
 
-### 🟩 Mario - Redirecciones + Pipes
+## 🛠️ Compilación y Uso
 
-**Feature 1: Redirecciones Simples**
-- [ ] Parser para detectar `<`, `>`, `>>`, `<<`
-- [ ] Extraer nombre de archivo
-- [ ] Implementar redirección input `<`
-- [ ] Implementar redirección output `>` y `>>`
-- [ ] Implementar heredoc `<<`
-
-**Feature 2: Sistema de Pipes**
-- [ ] Parser para detectar `|` y separar comandos
-- [ ] Pipe simple entre 2 comandos
-- [ ] Múltiples pipes (N comandos)
-- [ ] Gestión de procesos y wait
-
-**Feature 3: Integración Total**
-- [ ] Combinar redirecciones + pipes
-- [ ] Builtins en pipes
-- [ ] Edge cases
-
-**Testing completo:**
 ```bash
-> cat < input.txt
-> ls > output.txt
-> cat << EOF
-> ls | grep txt
-> cat file | grep test | wc -l
-> cat < in | grep x > out
-```
+# Compilar
+make
 
-**Ventajas:** Trabajas con el executor existente, añades capas progresivamente.
+# Ejecutar
+./minishell
 
----
+# Limpiar
+make clean
+make fclean
 
-## 📊 Estimación de Carga
+# Recompilar
+make re
 
-| Componente | Luis | Mario |
-|-----------|------|-------|
-| Parser simple | 100% | 0% |
-| Builtins (7) | 100% | 0% |
-| Quotes | 100% | 0% |
-| Redirecciones | 0% | 100% |
-| Pipes | 0% | 100% |
-| Integración | 50% | 50% |
-
-**Carga total:** ~50% cada uno
-
-**Ventaja:** Cada uno tiene su minishell funcional antes de integrar.
-
----
-
-## 🔄 Integración Final
-
-**Cuando ambos terminen sus features:**
-
-1. **Luis:** Mejora el parser para detectar pipes y redirecciones
-2. **Mario:** Adapta sus funciones para usar el parser de Luis
-3. **Juntos:** Testing completo de comandos complejos
-
-**Ejemplo de integración:**
-```bash
-# Luis puede testear:
-> echo "hello $USER"
-> cd /tmp && pwd
-> export X=1
-
-# Mario puede testear:
-> cat < file | grep test > out
-> ls | wc -l
-
-# Integrado:
-> echo "$USER" | grep root > result.txt
+# Verificar norminette
+norminette src
 ```
 
 ---
 
-## 🛠️ Comandos de Compilación
+## 🧪 Tests
 
 ```bash
-make          # Compilar proyecto
-make clean    # Limpiar objetos
-make fclean   # Limpieza completa
-make re       # Recompilar todo
+# Test de redirecciones
+bash tests/test_redirections.sh
+
+# Test de tokenizador
+cc -Wall -Wextra -Werror -I./includes -I./libs/libft/includes \
+   tests/test_tokenizer.c obj/*.o -L./libs/libft -lft -o test_tokenizer
+./test_tokenizer
 ```
 
 ---
 
-## 📚 Recursos
+## 📁 Estructura del Proyecto
 
-- [Bash Reference Manual](https://www.gnu.org/software/bash/manual/)
-- [Writing Your Own Shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
-- Testers: minishell_tester, 42_minishell_tester
+```
+minishell/
+├── includes/
+│   └── minishell.h
+├── libs/
+│   └── libft/
+├── src/
+│   ├── main.c
+│   ├── builtins/
+│   │   ├── builtins.c
+│   │   ├── cd.c
+│   │   ├── exit.c
+│   │   ├── echo.c, pwd.c, env.c, export.c, unset.c
+│   ├── exec/
+│   │   ├── executor.c
+│   │   ├── executor_path.c
+│   │   └── redirections.c
+│   ├── parser/
+│   │   ├── parser.c
+│   │   ├── parser_utils.c
+│   │   └── parser_args.c
+│   ├── tokenizator/
+│   │   ├── tokenizator.c
+│   │   ├── token_utils.c
+│   │   ├── tokenizator_helpers.c
+│   │   ├── tokenizator_operators.c
+│   │   └── tokenizator_quotes.c
+│   ├── signals/
+│   │   └── signals.c
+│   └── utils/
+│       ├── cleaners.c
+│       ├── enviroment.c
+│       └── enviroment_utils.c
+├── tests/
+│   ├── test_redirections.sh
+│   └── test_tokenizer.c
+└── Makefile
+```
 
 ---
 
 ## ✨ Autores
 
-**Luis** - Parsing, Tokenización, Expansión, Builtins  
-**Mario** - Redirecciones, Pipes, Integración de Ejecución
+**Luis** - Parsing, Expansión, Builtins  
+**Mario** - Redirecciones, Pipes, Tokenización
 
 ---
 
-*Última actualización: 16 de Noviembre, 2025*
+*Última actualización: 14 de Diciembre, 2024*

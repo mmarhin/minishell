@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 21:59:48 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/16 21:59:48 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/14 12:26:00 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,39 +36,6 @@ t_redir	*redir_init(t_token_type type)
 	aux->next = NULL;
 	aux->type = type;
 	return (aux);
-}
-
-void	add_arg(t_cmd *aux, t_token *tokens)
-{
-	char	**new_args;
-	int		i;
-	int		count;
-
-	count = 0;
-	if (aux->args)
-	{
-		while (aux->args[count])
-			count++;
-	}
-	new_args = malloc(sizeof(char *) * (count + 2));
-	if (!new_args)
-		return ;
-	i = 0;
-	while (i < count)
-	{
-		new_args[i] = aux->args[i];
-		i++;
-	}
-	new_args[count] = ft_strdup(tokens->value);
-	if (!new_args[count])
-	{
-		free(new_args);
-		return ;
-	}
-	new_args[count + 1] = NULL;
-	if (aux->args)
-		free(aux->args);
-	aux->args = new_args;
 }
 
 void	add_redir_to_cmd(t_cmd *cmd, t_redir *redir)

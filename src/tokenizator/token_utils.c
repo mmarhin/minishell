@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 12:00:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/11/16 13:13:11 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/16 13:18:10 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*create_token(t_token_type type, char *value)
+t_token	*create_token(t_token_type type, char *value, t_quote_type quote)
 {
 	t_token	*token;
 
@@ -21,14 +21,12 @@ t_token	*create_token(t_token_type type, char *value)
 		return (NULL);
 	token->type = type;
 	token->value = NULL;
+	token->quote = quote;
 	if (value)
 	{
 		token->value = ft_strdup(value);
 		if (!token->value)
-		{
-			free(token);
-			return (NULL);
-		}
+			return (free(token), NULL);
 	}
 	token->next = NULL;
 	return (token);

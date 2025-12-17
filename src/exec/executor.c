@@ -3,45 +3,54 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:45:22 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/16 22:16:04 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/14 12:25:15 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	exec_command(char **args, int background, t_shell *shell)
+static void	setup_child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGTSTP, SIG_DFL);
+	signal(SIGTTIN, SIG_DFL);
+	signal(SIGTTOU, SIG_DFL);
+}
+
+static void	exec_child(t_cmd *cmd, t_shell *shell)
+{
+	setup_child_signals();
+	if (cmd->redirs && apply_redirections(cmd->redirs) < 0)
+		exit(1);
+	exec_external(cmd->args, shell);
+	perror(cmd->args[0]);
+	exit(EXIT_FAILURE);
+}
+
+static void	wait_child(pid_t pid, t_shell *shell)
+{
+	int	status;
+
+	waitpid(pid, &status, WUNTRACED);
+	if (WIFEXITED(status))
+		shell->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		shell->exit_status = 128 + WTERMSIG(status);
+}
+
+void	exec_command(t_cmd *cmd, int background, t_shell *shell)
 {
 	pid_t	pid;
-	int		status;
 
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"));
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGTSTP, SIG_DFL);
-		signal(SIGTTIN, SIG_DFL);
-		signal(SIGTTOU, SIG_DFL);
-		exec_external(args, shell);
-		perror(args[0]);
-		exit(EXIT_FAILURE);
-	}
+		exec_child(cmd, shell);
 	if (background == 0)
-	{
-		waitpid(pid, &status, WUNTRACED);
-		if (WIFEXITED(status))
-			shell->exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			shell->exit_status = 128 + WTERMSIG(status);
-	}
-	else
-	{
-		printf("Background job running... pid: %d, command: %s\n",
-			pid, args[0]);
-	}
+		wait_child(pid, shell);
 }

@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 13:10:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/11/16 17:18:13 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/16 13:28:54 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static t_token	*handle_redir_in(char **str)
 	}
 	else
 		type = TOKEN_REDIR_IN;
-	return (create_token(type, NULL));
+	return (create_token(type, NULL, NO_QUOTE));
 }
 
 static t_token	*handle_redir_out(char **str)
@@ -39,7 +39,7 @@ static t_token	*handle_redir_out(char **str)
 	}
 	else
 		type = TOKEN_REDIR_OUT;
-	return (create_token(type, NULL));
+	return (create_token(type, NULL, NO_QUOTE));
 }
 
 t_token	*create_operator_token(char **str)
@@ -47,7 +47,7 @@ t_token	*create_operator_token(char **str)
 	if (**str == '|')
 	{
 		(*str)++;
-		return (create_token(TOKEN_PIPE, NULL));
+		return (create_token(TOKEN_PIPE, NULL, NO_QUOTE));
 	}
 	if (**str == '<')
 		return (handle_redir_in(str));
@@ -71,14 +71,16 @@ t_token	*handle_word(char **input, t_token *head)
 {
 	char	*word;
 	t_token	*new_token;
+	t_quote_type	quote;
 
+	quote = NO_QUOTE;
 	if (is_quote(**input))
-		word = extract_quoted_string(input);
+		word = extract_quoted_string(input, &quote);
 	else
 		word = extract_word(input);
 	if (!word)
 		return (free_tokens(head), NULL);
-	new_token = create_token(TOKEN_WORD, word);
+	new_token = create_token(TOKEN_WORD, word, quote);
 	free(word);
 	if (!new_token)
 		return (free_tokens(head), NULL);

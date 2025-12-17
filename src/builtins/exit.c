@@ -6,53 +6,71 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:41 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/02 23:01:41 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/15 01:45:26 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int is_numeric(char *str)
+static int	check_overflow(char *str, long *result)
 {
-	int i;
-
+	int		i;
+	int		sign;
+	long	num;
+	
 	i = 0;
+	sign = 1;
 	if (str[i] == '-' || str[i] == '+')
-		i++;
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;	
+	}
+	num = 0;
 	if (!str[i])
 		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
 			return (0);
+		if (sign == 1 && (num > (LONG_MAX - (str[i] - '0')) / 10))
+			return (0);
+		if (sign == -1 && (unsigned long)num > ((unsigned long)LONG_MAX + 1 - (str[i] - '0')) / 10)
+			return (0);
+		num = num * 10 + (str[i] - '0');
 		i++;
 	}
+	*result = num * sign;
 	return (1);
+}
+
+static void	exit_numeric_error(char *arg, t_shell *shell)
+{
+	ft_putstr_fd("exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd(": numeric argument required", 2);
+	free_environ(shell->envp);
+	exit(2);
 }
 
 void	ft_exit(char **args, t_shell *shell)
 {
-
+	long	exit_code;
+	
 	ft_putendl_fd("exit", 1);
 	if (!args[1])
 	{
 		free_environ(shell->envp);
-		exit(shell->last_exit_code);
+		exit(shell->exit_status);
 	}
 	if (args[2])
 	{
 		ft_putendl_fd("exit: too many arguments", 2);
-		shell->last_exit_code = 1;
-		return;
+		shell->exit_status = 1;
+		return ;
 	}
-	if (!is_numeric(args[1]))
-	{
-		ft_putstr_fd("exit: ", 2);
-		ft_putstr_fd(args[1], 2);
-		ft_putendl_fd(": numeric argument required", 2);
-		free_environ(shell->envp);
-		exit(2);
-	}
+	if (!check_overflow(args[1], &exit_code))
+		exit_numeric_error(args[1], shell);
 	free_environ(shell->envp);
-	exit(ft_atoi(args[1]) % 256);
+	exit((unsigned char)exit_code);
 }

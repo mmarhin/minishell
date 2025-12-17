@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:47:10 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/11/16 17:12:53 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/15 20:30:07 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,16 @@ void	exec_builtin(char **args, int builtin, t_shell *shell)
 {
 	if (builtin == 1)
 		ft_cd(args, shell);
-	/*
-	else if (builtin == 2)
+	if (builtin == 2)
 		ft_echo(args, shell);
-	else if (builtin == 3)
-		ft_pwd();
-	else if (builtin == 4)
+	if (builtin == 3)
+		ft_pwd(shell);
+	if (builtin == 4)
 		ft_env(shell);
-	else if (builtin == 5)
-		ft_export(args, shell);
-	else if (builtin == 6)
-		ft_unset(args, shell);
-	*/
+	if (builtin == 5)
+		ft_export(shell, args);
+	if (builtin == 6)
+		ft_unset(shell, args);
 	else if (builtin == 7)
 		ft_exit(args, shell);
 }
