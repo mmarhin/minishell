@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/16 13:21:41 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/17 13:21:20 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,9 @@ typedef struct s_shell {
 } t_shell;
 
 extern volatile sig_atomic_t g_sig;
+
+/* commands_expansion.c*/
+char	*expand_string(char *str, t_shell *shell, t_quote_type quote);
 
 /* executor_path.c */
 char *find_in_path(const char *cmd);
@@ -137,7 +140,7 @@ t_cmd *parse(t_token *tokens, t_shell *shell);
 /* parser/parser_utils.c */
 t_cmd *cmd_init(void);
 t_redir *redir_init(t_token_type type);
-void add_arg(t_cmd *aux, t_token *tokens);
+void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens);
 void add_redir_to_cmd(t_cmd *cmd, t_redir *redir);
 int is_redir(t_token_type type);
 

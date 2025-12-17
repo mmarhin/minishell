@@ -19,13 +19,14 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 | Señales (SIGINT, SIGQUIT) | ✅ Completo |
 | Builtin: `cd` | ✅ Completo |
 | Builtin: `exit` | ✅ Completo |
-| Builtin: `echo` | 🚧 Pendiente |
-| Builtin: `pwd` | 🚧 Pendiente |
-| Builtin: `env` | 🚧 Pendiente |
-| Builtin: `export` | 🚧 Pendiente |
-| Builtin: `unset` | 🚧 Pendiente |
+| Builtin: `echo` | ✅ Completo |
+| Builtin: `pwd` | ✅ Completo |
+| Builtin: `env` | ✅ Completo |
+| Builtin: `export` | ✅ Completo |
+| Builtin: `unset` | ✅ Completo |
+| Expansión de variables `$VAR` y `$?` | ✅ Completo |
+| Manejo de comillas (simples/dobles) | ✅ Completo |
 | Pipes `\|` | 🚧 Pendiente |
-| Expansión de variables `$VAR` | 🚧 Pendiente |
 | Norminette | ✅ OK |
 
 ---
@@ -68,21 +69,31 @@ Implementación de un shell simple en C que replica el comportamiento básico de
 - Captura de exit status
 - Soporte para redirecciones en comandos externos
 
+### ✅ Builtins Completos
+- `echo` - Con opción `-n` y múltiples flags
+- `cd` - Con gestión de HOME y errores
+- `pwd` - Obtiene directorio actual
+- `env` - Lista variables de entorno
+- `export` - Crea/modifica variables con validación
+- `unset` - Elimina variables con validación
+- `exit` - Con validación numérica y detección de overflow
+
+### ✅ Expansión de Variables
+- `$VAR` - Expansión de variables de entorno
+- `$?` - Exit status del último comando
+- Variables inexistentes se expanden a string vacío
+
+### ✅ Manejo de Comillas
+- Comillas simples `'...'` - Literal, sin expansión
+- Comillas dobles `"..."` - Expande variables
+- Se eliminan del resultado final
+
 ---
 
 ## 🚧 Pendiente de Implementación
 
-### Builtins
-- [ ] `echo` con opción `-n`
-- [ ] `pwd`
-- [ ] `env`
-- [ ] `export`
-- [ ] `unset`
-
 ### Funcionalidades
-- [ ] Pipes `|` (múltiples comandos)
-- [ ] Expansión de variables `$VAR`
-- [ ] Exit status `$?`
+- [ ] Pipes `|` - Ejecución de pipelines múltiples (parseo completo ✅, falta ejecución)
 
 ---
 
@@ -136,11 +147,16 @@ minishell/
 │   │   ├── builtins.c
 │   │   ├── cd.c
 │   │   ├── exit.c
-│   │   ├── echo.c, pwd.c, env.c, export.c, unset.c
+│   │   ├── echo.c
+│   │   ├── pwd.c
+│   │   ├── env.c
+│   │   ├── export.c
+│   │   └── unset.c
 │   ├── exec/
 │   │   ├── executor.c
 │   │   ├── executor_path.c
-│   │   └── redirections.c
+│   │   ├── redirections.c
+│   │   └── commands_expansion.c
 │   ├── parser/
 │   │   ├── parser.c
 │   │   ├── parser_utils.c
@@ -157,9 +173,6 @@ minishell/
 │       ├── cleaners.c
 │       ├── enviroment.c
 │       └── enviroment_utils.c
-├── tests/
-│   ├── test_redirections.sh
-│   └── test_tokenizer.c
 └── Makefile
 ```
 
@@ -172,4 +185,4 @@ minishell/
 
 ---
 
-*Última actualización: 14 de Diciembre, 2024*
+*Última actualización: 17 de Diciembre, 2024*

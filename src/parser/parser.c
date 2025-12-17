@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 17:27:49 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 12:41:39 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/17 13:23:14 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	handle_redir(t_token **tokens, t_cmd *cmd, t_shell *shell)
 	redir = redir_init(redir_type);
 	if (!redir)
 		return (shell->exit_status = 1, -1);
-	redir->file = ft_strdup((*tokens)->value);
+	redir->file = expand_string((*tokens)->value, shell, (*tokens)->quote);
 	if (!redir->file)
 		return (free(redir), shell->exit_status = 1, -1);
 	add_redir_to_cmd(cmd, redir);
@@ -64,10 +64,10 @@ static int	check_pipe_start(t_token *tokens, t_shell *shell)
 	return (0);
 }
 
-static int	process_token(t_token **tk, t_cmd **cur, t_cmd **f, t_cmd **l)
+static int	process_token(t_token **tk, t_cmd **cur, t_cmd **f, t_cmd **l, t_shell *shell)
 {
 	if ((*tk)->type == TOKEN_WORD)
-		add_arg(*cur, *tk);
+		add_arg(shell, *cur, *tk);
 	else if ((*tk)->type == TOKEN_PIPE)
 	{
 		handle_pipe(f, l, cur);
@@ -96,7 +96,7 @@ t_cmd	*parse(t_token *tokens, t_shell *shell)
 		is_r = is_redir(tokens->type);
 		if (is_r && handle_redir(&tokens, current, shell) == -1)
 			return (NULL);
-		else if (!is_r && process_token(&tokens, &current, &first, &last) < 0)
+		else if (!is_r && process_token(&tokens, &current, &first, &last, shell) < 0)
 			return (first);
 		tokens = tokens->next;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_args.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 12:00:00 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 12:26:10 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/17 13:21:00 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	count_args(char **args)
 	return (count);
 }
 
-void	add_arg(t_cmd *aux, t_token *tokens)
+void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
 {
 	char	**new_args;
 	int		i;
@@ -41,7 +41,7 @@ void	add_arg(t_cmd *aux, t_token *tokens)
 		new_args[i] = aux->args[i];
 		i++;
 	}
-	new_args[count] = ft_strdup(tokens->value);
+	new_args[count] = expand_string(tokens->value, shell, tokens->quote);
 	if (!new_args[count])
 		return (free(new_args));
 	new_args[count + 1] = NULL;
