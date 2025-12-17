@@ -9,10 +9,10 @@
 /*   Updated: 2025/12/16 13:33:20 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/*
 #include "minishell.h"
 
 void	expand_commands(t_cmd *commands, t_shell *shell)
 {
 	
-}
+}*/

@@ -6,7 +6,7 @@
 /*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:42:53 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/16 13:32:43 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/17 10:57:00 by lanton-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	process_input(char *line, t_shell *shell)
 		free_tokens(tokens);
 		return ;
 	}
-	expand_commands(commands, shell);
+	//expand_commands(commands, shell);
 	current = commands;
 	while (current)
 	{
