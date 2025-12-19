@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 12:00:00 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 12:25:27 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:37:34 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,7 @@ static int	apply_redir_in(char *file)
 	if (fd < 0)
 		return (redir_error(file));
 	if (dup2(fd, STDIN_FILENO) < 0)
-	{
-		perror("dup2");
-		close(fd);
-		return (-1);
-	}
+		return (perror("dup2"), close(fd), -1);
 	close(fd);
 	return (0);
 }
@@ -49,38 +45,8 @@ static int	apply_redir_out(char *file, int append)
 	if (fd < 0)
 		return (redir_error(file));
 	if (dup2(fd, STDOUT_FILENO) < 0)
-	{
-		perror("dup2");
-		close(fd);
-		return (-1);
-	}
+		return (perror("dup2"), close(fd), -1);
 	close(fd);
-	return (0);
-}
-
-static int	apply_heredoc(char *delimiter)
-{
-	int		pipefd[2];
-	char	*line;
-
-	if (pipe(pipefd) < 0)
-		return (perror("pipe"), -1);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
-		free(line);
-	}
-	close(pipefd[1]);
-	if (dup2(pipefd[0], STDIN_FILENO) < 0)
-		return (perror("dup2"), close(pipefd[0]), -1);
-	close(pipefd[0]);
 	return (0);
 }
 

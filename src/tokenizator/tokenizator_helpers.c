@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 13:10:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/12/14 12:27:25 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:20:13 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ char	*extract_word(char **str)
 
 	start = *str;
 	len = 0;
-	while ((*str)[len] && !is_space((*str)[len]) && !is_operator((*str)[len]))
+	while ((*str)[len] && !is_space((*str)[len]) && !is_operator((*str)[len])
+		&& !is_quote((*str)[len]))
 		len++;
 	word = malloc(len + 1);
 	if (!word)

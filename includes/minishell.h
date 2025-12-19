@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 15:40:41 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:56:41 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,14 @@ typedef struct s_parse_ctx
 	t_shell						*shell;
 }								t_parse_ctx;
 
+typedef struct s_pipe_ctx
+{
+	int							pipefd[2];
+	int							prev_fd;
+	pid_t						pids[256];
+	int							count;
+}								t_pipe_ctx;
+
 extern volatile sig_atomic_t	g_sig;
 
 /* commands_expansion.c*/
@@ -96,9 +104,17 @@ void							exec_external(char *const argv[],
 /* executor.c */
 void							exec_command(t_cmd *cmd, int background,
 									t_shell *shell);
+void							execute_single_cmd(t_cmd *current,
+									t_shell *shell);
 
 /* redirections.c */
 int								apply_redirections(t_redir *redirs);
+
+/* pipes.c */
+void							exec_pipeline(t_cmd *cmds, t_shell *shell);
+
+/* redirections_heredoc.c */
+int								apply_heredoc(char *delimiter);
 
 /* signals.c */
 void							setup_signals_interactive(void);
@@ -108,6 +124,10 @@ void							handle_sigint(int sig);
 void							ft_freesplit(char **split);
 void							free_environ(char **envp);
 void							free_cmd_list(t_cmd *commands);
+
+/* banner.c */
+void							print_banner(void);
+char							*get_prompt(int exit_status);
 
 /* enviroment.c*/
 char							**copy_environ(char **envp);
@@ -161,7 +181,7 @@ t_cmd							*parse(t_token *tokens, t_shell *shell);
 t_cmd							*cmd_init(void);
 t_redir							*redir_init(t_token_type type);
 void							add_arg(t_shell *shell, t_cmd *aux,
-									t_token *tokens);
+									t_token *tks);
 void							add_redir_to_cmd(t_cmd *cmd, t_redir *redir);
 int								is_redir(t_token_type type);
 

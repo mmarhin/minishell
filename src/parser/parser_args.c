@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_args.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 12:00:00 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/17 13:21:00 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:20:58 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	count_args(char **args)
 	return (count);
 }
 
-void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
+static char	**create_new_args(t_cmd *aux, char *expanded)
 {
 	char	**new_args;
 	int		i;
@@ -34,17 +34,31 @@ void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
 	count = count_args(aux->args);
 	new_args = malloc(sizeof(char *) * (count + 2));
 	if (!new_args)
-		return ;
+		return (free(expanded), NULL);
 	i = 0;
 	while (i < count)
 	{
 		new_args[i] = aux->args[i];
 		i++;
 	}
-	new_args[count] = expand_string(tokens->value, shell, tokens->quote);
-	if (!new_args[count])
-		return (free(new_args));
+	new_args[count] = expanded;
 	new_args[count + 1] = NULL;
+	return (new_args);
+}
+
+void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
+{
+	char	**new_args;
+	char	*expanded;
+
+	expanded = expand_string(tokens->value, shell, tokens->quote);
+	if (!expanded)
+		return ;
+	if (expanded[0] == '\0' && tokens->quote == NO_QUOTE)
+		return (free(expanded));
+	new_args = create_new_args(aux, expanded);
+	if (!new_args)
+		return ;
 	if (aux->args)
 		free(aux->args);
 	aux->args = new_args;

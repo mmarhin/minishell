@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:45:22 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 12:25:15 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:45:49 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,32 @@ void	exec_command(t_cmd *cmd, int background, t_shell *shell)
 		exec_child(cmd, shell);
 	if (background == 0)
 		wait_child(pid, shell);
+}
+
+void	execute_single_cmd(t_cmd *current, t_shell *shell)
+{
+	int	builtin_id;
+	int	saved[2];
+
+	if (!current->args || !current->args[0])
+		return ;
+	builtin_id = is_builtin(current->args[0]);
+	if (!builtin_id)
+		return (exec_command(current, 0, shell));
+	saved[0] = dup(STDIN_FILENO);
+	saved[1] = dup(STDOUT_FILENO);
+	if (current->redirs && apply_redirections(current->redirs) < 0)
+	{
+		dup2(saved[0], STDIN_FILENO);
+		dup2(saved[1], STDOUT_FILENO);
+		close(saved[0]);
+		close(saved[1]);
+		shell->exit_status = 1;
+		return ;
+	}
+	exec_builtin(current->args, builtin_id, shell);
+	dup2(saved[0], STDIN_FILENO);
+	dup2(saved[1], STDOUT_FILENO);
+	close(saved[0]);
+	close(saved[1]);
 }

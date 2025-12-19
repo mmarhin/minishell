@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 13:10:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/12/19 15:30:47 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:21:34 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,27 +61,6 @@ t_token	*handle_operator(char **input, t_token *head)
 	t_token	*new_token;
 
 	new_token = create_operator_token(input);
-	if (!new_token)
-		return (free_tokens(head), NULL);
-	add_token(&head, new_token);
-	return (head);
-}
-
-t_token	*handle_word(char **input, t_token *head)
-{
-	char			*word;
-	t_token			*new_token;
-	t_quote_type	quote;
-
-	quote = NO_QUOTE;
-	if (is_quote(**input))
-		word = extract_quoted_string(input, &quote);
-	else
-		word = extract_word(input);
-	if (!word)
-		return (free_tokens(head), NULL);
-	new_token = create_token(TOKEN_WORD, word, quote);
-	free(word);
 	if (!new_token)
 		return (free_tokens(head), NULL);
 	add_token(&head, new_token);

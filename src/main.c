@@ -6,30 +6,16 @@
 /*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:42:53 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 15:32:10 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 16:53:15 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	execute_command(t_cmd *current, t_shell *shell)
-{
-	int	builtin_id;
-
-	if (!current->args || !current->args[0])
-		return ;
-	builtin_id = is_builtin(current->args[0]);
-	if (builtin_id)
-		exec_builtin(current->args, builtin_id, shell);
-	else
-		exec_command(current, 0, shell);
-}
-
 static void	process_input(char *line, t_shell *shell)
 {
 	t_token	*tokens;
 	t_cmd	*commands;
-	t_cmd	*current;
 
 	tokens = tokenize(line);
 	if (!tokens)
@@ -40,12 +26,10 @@ static void	process_input(char *line, t_shell *shell)
 		free_tokens(tokens);
 		return ;
 	}
-	current = commands;
-	while (current)
-	{
-		execute_command(current, shell);
-		current = current->next;
-	}
+	if (commands->next)
+		exec_pipeline(commands, shell);
+	else
+		execute_single_cmd(commands, shell);
 	free_tokens(tokens);
 	free_cmd_list(commands);
 }
@@ -59,16 +43,20 @@ static int	init_shell(t_shell *shell, char **envp)
 		return (ft_putendl_fd("Error: failed to copy environment", 2), 1);
 	shell->exit_status = 0;
 	setup_signals_interactive();
+	print_banner();
 	return (0);
 }
 
 static void	shell_loop(t_shell *shell)
 {
 	char	*line;
+	char	*prompt;
 
 	while (1)
 	{
-		line = readline("minishell> ");
+		prompt = get_prompt(shell->exit_status);
+		line = readline(prompt);
+		free(prompt);
 		if (!line)
 			break ;
 		if (*line)
