@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizator_operators.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 13:10:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/12/16 13:28:54 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:30:47 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ t_token	*handle_operator(char **input, t_token *head)
 
 t_token	*handle_word(char **input, t_token *head)
 {
-	char	*word;
-	t_token	*new_token;
+	char			*word;
+	t_token			*new_token;
 	t_quote_type	quote;
 
 	quote = NO_QUOTE;

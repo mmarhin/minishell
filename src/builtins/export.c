@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:53 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/15 20:21:12 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:34:08 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void	print_env(t_shell *shell)
 {
-	int	i;
+	int		i;
 	char	*frase;
-	
+
 	i = 0;
 	frase = "declare -x";
 	if (!shell->envp)
@@ -50,12 +50,12 @@ static int	valid_arg(char *key)
 	return (1);
 }
 
-static void export_var(t_shell *shell, char *var)
+static void	export_var(t_shell *shell, char *var)
 {
 	char	*eq;
 	char	*key;
 	char	*value;
-	
+
 	eq = ft_strchr(var, '=');
 	if (eq)
 	{
@@ -70,11 +70,19 @@ static void export_var(t_shell *shell, char *var)
 		set_env(shell, var, "");
 }
 
+static void	print_error(char *arg, int *err_cod)
+{
+	ft_putstr_fd("export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
+	*err_cod = 1;
+}
+
 void	ft_export(t_shell *shell, char **args)
 {
 	int		i;
 	int		err_cod;
-	
+
 	i = 1;
 	err_cod = 0;
 	if (!shell)
@@ -88,12 +96,7 @@ void	ft_export(t_shell *shell, char **args)
 			if (valid_arg(args[i]))
 				export_var(shell, args[i]);
 			else
-			{
-				ft_putstr_fd("export: `", 2);
-				ft_putstr_fd(args[i], 2);
-				ft_putendl_fd("': not a valid identifier", 2);
-				err_cod = 1;
-			}
+				print_error(args[i], &err_cod);
 			i++;
 		}
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:30 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/15 01:39:22 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 09:35:06 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	ft_echo(char **args, t_shell *shell)
 {
 	int	i;
 	int	new_line;
-	
+
 	new_line = 1;
 	i = 1;
 	while (args[i] && args[i][0] == '-')
@@ -41,7 +41,7 @@ void	ft_echo(char **args, t_shell *shell)
 		if (check_n(args[i]))
 			new_line = 0;
 		else
-			break;
+			break ;
 		i++;
 	}
 	while (args[i])

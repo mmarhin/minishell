@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:02:19 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/16 12:36:09 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:34:12 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_unset(t_shell *shell, char **args)
 {
 	int		i;
 	int		err_cod;
-	
+
 	i = 1;
 	err_cod = 0;
 	if (!shell)

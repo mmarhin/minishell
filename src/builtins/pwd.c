@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:02:01 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/15 01:47:21 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:32:43 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_pwd(t_shell *shell)
 {
 	char	buffer[PATH_MAX];
-	
+
 	if (!getcwd(buffer, PATH_MAX))
 	{
 		perror("pwd");

@@ -4,7 +4,7 @@ CFLAGS  := -Wall -Wextra -Werror
 INCLUDES    := -I./includes -I./libs/libft/includes
 
 SRCS    := main.c executor.c executor_path.c redirections.c signals.c \
-		   commands_expansion.c enviroment.c enviroment_utils.c cleaners.c \
+		   commands_expansion.c expansion_utils.c enviroment.c enviroment_utils.c cleaners.c \
 		   tokenizator.c token_utils.c tokenizator_helpers.c tokenizator_operators.c \
 		   tokenizator_quotes.c parser.c parser_utils.c parser_args.c \
 		   builtins.c cd.c exit.c echo.c pwd.c env.c export.c unset.c

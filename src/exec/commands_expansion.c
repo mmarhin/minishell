@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+char	*final_result(char *s1, char *s2, char *s3);
+char	*append_char(char *result, char c);
+
 static char	*get_var_name(char **str)
 {
 	size_t		key_len;
@@ -24,7 +27,8 @@ static char	*get_var_name(char **str)
 		return (NULL);
 	while ((*str)[key_len])
 	{
-		if (!ft_isalpha((*str)[key_len]) && !ft_isdigit((*str)[key_len]) && (*str)[key_len] != '_')
+		if (!ft_isalpha((*str)[key_len]) && !ft_isdigit((*str)[key_len])
+			&& (*str)[key_len] != '_')
 			break ;
 		key_len++;
 	}
@@ -47,21 +51,6 @@ static char	*expand_variable(char *var_name, t_shell *shell)
 	if (!get_env(shell, var_name))
 		return (ft_strdup(""));
 	return (ft_strdup(get_env(shell, var_name)));
-
-}
-
-static char	*final_result(char *s1, char *s2, char *s3)
-{
-	char	*tmp;
-	char	*result;
-
-	tmp = ft_strjoin(s1, s2);
-	if (!tmp)
-		return (free(s1), NULL);
-	result = ft_strjoin(tmp, s3);
-	free(tmp);
-	free(s1);
-	return (result);
 }
 
 static char	*process_expansion(char **str, char *result, t_shell *shell)
@@ -74,19 +63,6 @@ static char	*process_expansion(char **str, char *result, t_shell *shell)
 	value = expand_variable(key, shell);
 	result = final_result(result, value, "");
 	return (free(key), free(value), result);
-}
-
-static char	*append_char(char *result, char c)
-{
-	char	str[2];
-	char	*new_res;
-
-	str[0] = c;
-	str[1] = '\0';
-	new_res = ft_strjoin(result, str);
-	if (!new_res)
-		return (NULL);
-	return(free(result), new_res);
 }
 
 char	*expand_string(char *str, t_shell *shell, t_quote_type quote)

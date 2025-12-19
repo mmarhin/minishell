@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 17:27:49 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/17 13:23:14 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:32:26 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,13 @@ static int	check_pipe_start(t_token *tokens, t_shell *shell)
 	return (0);
 }
 
-static int	process_token(t_token **tk, t_cmd **cur, t_cmd **f, t_cmd **l, t_shell *shell)
+static int	process_token(t_token **tk, t_cmd **cur, t_parse_ctx *ctx)
 {
 	if ((*tk)->type == TOKEN_WORD)
-		add_arg(shell, *cur, *tk);
+		add_arg(ctx->shell, *cur, *tk);
 	else if ((*tk)->type == TOKEN_PIPE)
 	{
-		handle_pipe(f, l, cur);
+		handle_pipe(&ctx->first, &ctx->last, cur);
 		if (!*cur)
 			return (-1);
 	}
@@ -79,15 +79,15 @@ static int	process_token(t_token **tk, t_cmd **cur, t_cmd **f, t_cmd **l, t_shel
 
 t_cmd	*parse(t_token *tokens, t_shell *shell)
 {
-	t_cmd	*current;
-	t_cmd	*first;
-	t_cmd	*last;
-	int		is_r;
+	t_cmd		*current;
+	t_parse_ctx	ctx;
+	int			is_r;
 
 	if (check_pipe_start(tokens, shell))
 		return (NULL);
-	first = NULL;
-	last = NULL;
+	ctx.first = NULL;
+	ctx.last = NULL;
+	ctx.shell = shell;
 	current = cmd_init();
 	if (!current)
 		return (NULL);
@@ -96,12 +96,12 @@ t_cmd	*parse(t_token *tokens, t_shell *shell)
 		is_r = is_redir(tokens->type);
 		if (is_r && handle_redir(&tokens, current, shell) == -1)
 			return (NULL);
-		else if (!is_r && process_token(&tokens, &current, &first, &last, shell) < 0)
-			return (first);
+		else if (!is_r && process_token(&tokens, &current, &ctx) < 0)
+			return (ctx.first);
 		tokens = tokens->next;
 	}
-	if (!first)
+	if (!ctx.first)
 		return (current);
-	last->next = current;
-	return (first);
+	ctx.last->next = current;
+	return (ctx.first);
 }
