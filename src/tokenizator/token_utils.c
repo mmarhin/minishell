@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 12:00:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2025/12/16 13:18:10 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:18:16 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,4 @@ void	free_tokens(t_token *head)
 			free(tmp->value);
 		free(tmp);
 	}
-}
-
-void	print_tokens(t_token *head)
-{
-	const char	*types[] = {"WORD", "PIPE", "<", ">", ">>", "<<"};
-
-	while (head)
-	{
-		printf("[%s", types[head->type]);
-		if (head->value)
-			printf(":\"%s\"", head->value);
-		printf("] ");
-		head = head->next;
-	}
-	printf("\n");
 }

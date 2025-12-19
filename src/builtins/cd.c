@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:06 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 14:26:59 by lanton-m         ###   ########.fr       */
+/*   Updated: 2025/12/19 20:26:20 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	cd_home(t_shell *shell)
 
 void	ft_cd(char **args, t_shell *shell)
 {
-	if (!args[1])
+	if (!args[1] || args[1][0] == '~')
 		return (cd_home(shell));
 	if (args[2])
 	{

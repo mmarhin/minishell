@@ -71,8 +71,9 @@ typedef struct s_cmd
 
 typedef struct s_shell
 {
-	char						**envp;
-	int							exit_status;
+	char							**envp;
+	int								exit_status;
+	int								interactive;
 }								t_shell;
 
 typedef struct s_parse_ctx

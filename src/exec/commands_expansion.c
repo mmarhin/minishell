@@ -14,6 +14,7 @@
 
 char	*final_result(char *s1, char *s2, char *s3);
 char	*append_char(char *result, char c);
+char	*expand_tilde(char *str, t_shell *shell, t_quote_type quote);
 
 static char	*get_var_name(char **str)
 {
@@ -65,28 +66,39 @@ static char	*process_expansion(char **str, char *result, t_shell *shell)
 	return (free(key), free(value), result);
 }
 
-char	*expand_string(char *str, t_shell *shell, t_quote_type quote)
+static char	*expand_vars_loop(char *src, t_shell *shell, t_quote_type quote)
 {
 	char	*result;
-	char	*ptr;
 
-	if (quote == SINGLE_QUOTE)
-		return (ft_strdup(str));
 	result = ft_strdup("");
 	if (!result)
 		return (NULL);
-	ptr = str;
-	while (*ptr)
+	while (*src)
 	{
-		if (*ptr == '$' && (quote == DOUBLE_QUOTE || quote == NO_QUOTE))
-			result = process_expansion(&ptr, result, shell);
+		if (*src == '$' && (quote == DOUBLE_QUOTE || quote == NO_QUOTE))
+			result = process_expansion(&src, result, shell);
 		else
 		{
-			result = append_char(result, *ptr);
-			ptr++;
+			result = append_char(result, *src);
+			src++;
 		}
 		if (!result)
 			return (NULL);
 	}
+	return (result);
+}
+
+char	*expand_string(char *str, t_shell *shell, t_quote_type quote)
+{
+	char	*tilde_exp;
+	char	*result;
+
+	if (quote == SINGLE_QUOTE)
+		return (ft_strdup(str));
+	tilde_exp = expand_tilde(str, shell, quote);
+	if (!tilde_exp)
+		return (NULL);
+	result = expand_vars_loop(tilde_exp, shell, quote);
+	free(tilde_exp);
 	return (result);
 }

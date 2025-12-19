@@ -38,3 +38,24 @@ char	*append_char(char *result, char c)
 		return (NULL);
 	return (free(result), new_res);
 }
+
+char	*expand_tilde(char *str, t_shell *shell, t_quote_type quote)
+{
+	char	*home;
+	char	*result;
+
+	if (quote != NO_QUOTE)
+		return (ft_strdup(str));
+	if (str[0] != '~')
+		return (ft_strdup(str));
+	if (str[1] != '\0' && str[1] != '/')
+		return (ft_strdup(str));
+	home = get_env(shell, "HOME");
+	if (!home)
+		return (ft_strdup(str));
+	if (str[1] == '\0')
+		result = ft_strdup(home);
+	else
+		result = ft_strjoin(home, str + 1);
+	return (result);
+}

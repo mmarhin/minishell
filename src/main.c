@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:42:53 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 16:53:15 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 19:58:59 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,36 @@ static int	init_shell(t_shell *shell, char **envp)
 	if (!shell->envp)
 		return (ft_putendl_fd("Error: failed to copy environment", 2), 1);
 	shell->exit_status = 0;
+	shell->interactive = isatty(STDIN_FILENO);
 	setup_signals_interactive();
-	print_banner();
 	return (0);
 }
 
 static void	shell_loop(t_shell *shell)
 {
 	char	*line;
-	char	*prompt;
+	size_t	len;
 
 	while (1)
 	{
-		prompt = get_prompt(shell->exit_status);
-		line = readline(prompt);
-		free(prompt);
+		if (shell->interactive)
+		{
+			line = readline("minishell> ");
+			if (line && *line)
+				add_history(line);
+		}
+		else
+			line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;
-		if (*line)
+		if (!shell->interactive)
 		{
-			add_history(line);
-			process_input(line, shell);
+			len = ft_strlen(line);
+			if (len > 0 && line[len - 1] == '\n')
+				line[len - 1] = '\0';
 		}
+		if (*line)
+			process_input(line, shell);
 		free(line);
 	}
 }
@@ -78,6 +86,7 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	shell_loop(&shell);
 	free_environ(shell.envp);
-	ft_putendl_fd("exit", 1);
+	if (shell.interactive)
+		ft_putendl_fd("exit", 1);
 	return (shell.exit_status);
 }
