@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 16:56:41 by mamarin-         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:16:37 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,6 @@ t_token							*create_token(t_token_type type, char *value,
 									t_quote_type quote);
 void							add_token(t_token **head, t_token *new_token);
 void							free_tokens(t_token *head);
-void							print_tokens(t_token *head);
 
 /* tokenizer/tokenizator_helpers.c */
 int								is_space(char c);
