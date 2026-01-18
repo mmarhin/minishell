@@ -41,6 +41,8 @@ static void	free_redirs(t_redir *redirs)
 		tmp = redirs->next;
 		if (redirs->file)
 			free(redirs->file);
+		if (redirs->heredoc_content)
+			free(redirs->heredoc_content);
 		free(redirs);
 		redirs = tmp;
 	}

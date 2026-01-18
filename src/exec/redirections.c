@@ -50,22 +50,34 @@ static int	apply_redir_out(char *file, int append)
 	return (0);
 }
 
-int	apply_redirections(t_redir *redirs)
+int	apply_redirections(t_redir *redirs, t_shell *shell)
 {
 	while (redirs)
 	{
 		if (redirs->type == TOKEN_REDIR_IN
 			&& apply_redir_in(redirs->file) < 0)
+		{
+			shell->exit_status = 1;
 			return (-1);
+		}
 		else if (redirs->type == TOKEN_REDIR_OUT
 			&& apply_redir_out(redirs->file, 0) < 0)
+		{
+			shell->exit_status = 1;
 			return (-1);
+		}
 		else if (redirs->type == TOKEN_REDIR_APPEND
 			&& apply_redir_out(redirs->file, 1) < 0)
+		{
+			shell->exit_status = 1;
 			return (-1);
+		}
 		else if (redirs->type == TOKEN_HEREDOC
-			&& apply_heredoc(redirs->file) < 0)
+		&& apply_heredoc(redirs->heredoc_content) < 0)
+		{
+			shell->exit_status = 1;
 			return (-1);
+		}
 		redirs = redirs->next;
 	}
 	return (0);

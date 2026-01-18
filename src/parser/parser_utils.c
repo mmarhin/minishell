@@ -33,6 +33,7 @@ t_redir	*redir_init(t_token_type type)
 	if (!aux)
 		return (NULL);
 	aux->file = NULL;
+	aux->heredoc_content = NULL;
 	aux->next = NULL;
 	aux->type = type;
 	return (aux);
