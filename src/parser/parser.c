@@ -12,10 +12,54 @@
 
 #include "minishell.h"
 
+static char	*read_heredoc_content(char *delim, t_shell *shell, t_quote_type qt)
+{
+	char	*content;
+	char	*line;
+	char	*tmp;
+	size_t	len;
+
+	content = ft_strdup("");
+	if (!content)
+		return (NULL);
+	while (1)
+	{
+		if (shell->interactive)
+			line = readline("> ");
+		else
+			line = get_next_line(STDIN_FILENO);
+		if (!line)
+			break ;
+		len = ft_strlen(line);
+		if (!shell->interactive && len > 0 && line[len - 1] == '\n')
+			line[len - 1] = '\0';
+		if (ft_strcmp(line, delim) == 0)
+		{
+			free(line);
+			break ;
+		}
+		if (qt == NO_QUOTE)
+		{
+			tmp = expand_string(line, shell, DOUBLE_QUOTE);
+			free(line);
+			line = tmp;
+		}
+		tmp = ft_strjoin(content, line);
+		free(content);
+		free(line);
+		content = ft_strjoin(tmp, "\n");
+		free(tmp);
+		if (!content)
+			return (NULL);
+	}
+	return (content);
+}
+
 static int	handle_redir(t_token **tokens, t_cmd *cmd, t_shell *shell)
 {
 	t_redir			*redir;
 	t_token_type	redir_type;
+	t_quote_type	quote_type;
 
 	redir_type = (*tokens)->type;
 	*tokens = (*tokens)->next;
@@ -25,12 +69,20 @@ static int	handle_redir(t_token **tokens, t_cmd *cmd, t_shell *shell)
 		shell->exit_status = 2;
 		return (-1);
 	}
+	quote_type = (*tokens)->quote;
 	redir = redir_init(redir_type);
 	if (!redir)
 		return (shell->exit_status = 1, -1);
-	redir->file = expand_string((*tokens)->value, shell, (*tokens)->quote);
+	redir->file = expand_string((*tokens)->value, shell, quote_type);
 	if (!redir->file)
 		return (free(redir), shell->exit_status = 1, -1);
+	if (redir_type == TOKEN_HEREDOC)
+	{
+		redir->heredoc_content = read_heredoc_content(redir->file, shell,
+				quote_type);
+		if (!redir->heredoc_content)
+			return (free(redir->file), free(redir), shell->exit_status = 1, -1);
+	}
 	add_redir_to_cmd(cmd, redir);
 	return (0);
 }

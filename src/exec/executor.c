@@ -24,7 +24,7 @@ static void	setup_child_signals(void)
 static void	exec_child(t_cmd *cmd, t_shell *shell)
 {
 	setup_child_signals();
-	if (cmd->redirs && apply_redirections(cmd->redirs) < 0)
+	if (cmd->redirs && apply_redirections(cmd->redirs, shell) < 0)
 		exit(1);
 	exec_external(cmd->args, shell);
 	perror(cmd->args[0]);
@@ -61,13 +61,20 @@ void	execute_single_cmd(t_cmd *current, t_shell *shell)
 	int	saved[2];
 
 	if (!current->args || !current->args[0])
+	{
+		if (current->redirs && apply_redirections(current->redirs, shell) < 0)
+		{
+			shell->exit_status = 1;
+			return ;
+		}
 		return ;
+	}
 	builtin_id = is_builtin(current->args[0]);
 	if (!builtin_id)
 		return (exec_command(current, 0, shell));
 	saved[0] = dup(STDIN_FILENO);
 	saved[1] = dup(STDOUT_FILENO);
-	if (current->redirs && apply_redirections(current->redirs) < 0)
+	if (current->redirs && apply_redirections(current->redirs, shell) < 0)
 	{
 		dup2(saved[0], STDIN_FILENO);
 		dup2(saved[1], STDOUT_FILENO);

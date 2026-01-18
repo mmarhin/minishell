@@ -35,7 +35,7 @@ static void	exec_pipe_child(t_cmd *cmd, t_shell *shell, t_pipe_ctx *ctx,
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	setup_pipe_fds(ctx, is_last);
-	if (cmd->redirs && apply_redirections(cmd->redirs) < 0)
+	if (cmd->redirs && apply_redirections(cmd->redirs, shell) < 0)
 		exit(1);
 	if (!cmd->args || !cmd->args[0])
 		exit(0);

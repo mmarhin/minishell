@@ -60,6 +60,7 @@ typedef struct s_redir
 {
 	t_token_type				type;
 	char						*file;
+	char						*heredoc_content;
 	struct s_redir				*next;
 }								t_redir;
 
@@ -111,13 +112,13 @@ void							execute_single_cmd(t_cmd *current,
 									t_shell *shell);
 
 /* redirections.c */
-int								apply_redirections(t_redir *redirs);
+int								apply_redirections(t_redir *redirs, t_shell *shell);
 
 /* pipes.c */
 void							exec_pipeline(t_cmd *cmds, t_shell *shell);
 
 /* redirections_heredoc.c */
-int								apply_heredoc(char *delimiter);
+int								apply_heredoc(char *content);
 
 /* signals.c */
 void							setup_signals_interactive(void);
