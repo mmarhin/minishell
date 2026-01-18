@@ -1,0 +1,2 @@
+declare -x COLORTERM="truecolor"
+declare -x COLORTERM=truecolor
