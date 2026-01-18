@@ -59,6 +59,8 @@ static void	exit_numeric_error(char *arg, t_shell *shell)
 	ft_putstr_fd(arg, 2);
 	ft_putendl_fd(": numeric argument required", 2);
 	free_environ(shell->envp);
+	if (shell->last_path)
+		free(shell->last_path);
 	exit(2);
 }
 
@@ -71,6 +73,8 @@ void	ft_exit(char **args, t_shell *shell)
 	if (!args[1])
 	{
 		free_environ(shell->envp);
+		if (shell->last_path)
+			free(shell->last_path);
 		exit(shell->exit_status);
 	}
 	if (!check_overflow(args[1], &exit_code))
@@ -82,5 +86,7 @@ void	ft_exit(char **args, t_shell *shell)
 		return ;
 	}
 	free_environ(shell->envp);
+	if (shell->last_path)
+		free(shell->last_path);
 	exit((unsigned char)exit_code);
 }

@@ -51,10 +51,21 @@ static char	*resolve_in_path(char **dir, const char *cmd)
 	return (ft_freesplit(dir), NULL);
 }
 
-char	*find_in_path(const char *cmd)
+static char	*try_current_dir(const char *cmd)
 {
-	const char	*path;
-	char		**dir;
+	char	*full;
+
+	full = join_path(".", cmd);
+	if (full && is_executable(full))
+		return (full);
+	free(full);
+	return (NULL);
+}
+
+char	*find_in_path(const char *cmd, t_shell *shell)
+{
+	char	*path;
+	char	**dir;
 
 	if (!cmd || !*cmd)
 		return (NULL);
@@ -64,9 +75,9 @@ char	*find_in_path(const char *cmd)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	path = getenv("PATH");
+	path = get_env(shell, "PATH");
 	if (!path || !*path)
-		return (NULL);
+		return (try_current_dir(cmd));
 	dir = ft_split(path, ':');
 	if (!dir)
 		return (NULL);
@@ -77,7 +88,7 @@ void	exec_external(char *const argv[], t_shell *shell)
 {
 	char	*path;
 
-	path = find_in_path(argv[0]);
+	path = find_in_path(argv[0], shell);
 	if (!path)
 	{
 		ft_putstr_fd(argv[0], 2);

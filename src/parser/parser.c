@@ -147,9 +147,9 @@ t_cmd	*parse(t_token *tokens, t_shell *shell)
 	{
 		is_r = is_redir(tokens->type);
 		if (is_r && handle_redir(&tokens, current, shell) == -1)
-			return (NULL);
+			return (free_cmd_list(current), free_cmd_list(ctx.first), NULL);
 		else if (!is_r && process_token(&tokens, &current, &ctx) < 0)
-			return (ctx.first);
+			return (free_cmd_list(current), ctx.first);
 		tokens = tokens->next;
 	}
 	if (!ctx.first)

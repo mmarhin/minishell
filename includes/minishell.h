@@ -101,9 +101,9 @@ char							*expand_string(char *str, t_shell *shell,
 									t_quote_type quote);
 
 /* executor_path.c */
-char							*find_in_path(const char *cmd);
-void							exec_external(char *const argv[],
-									t_shell *shell);
+char								*find_in_path(const char *cmd, t_shell *shell);
+void								exec_external(char *const argv[],
+										t_shell *shell);
 
 /* executor.c */
 void							exec_command(t_cmd *cmd, int background,
