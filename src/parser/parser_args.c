@@ -51,7 +51,8 @@ void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
 	char	**new_args;
 	char	*expanded;
 
-	expanded = expand_string(tokens->value, shell, tokens->quote);
+	(void)shell;
+	expanded = ft_strdup(tokens->value);
 	if (!expanded)
 		return ;
 	if (expanded[0] == '\0' && tokens->quote == NO_QUOTE)

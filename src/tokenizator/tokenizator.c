@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_token	*tokenize(char *input)
+t_token	*tokenize(char *input, t_shell *shell)
 {
 	t_token	*head;
 
@@ -25,7 +25,7 @@ t_token	*tokenize(char *input)
 		if (is_operator(*input))
 			head = handle_operator(&input, head);
 		else
-			head = handle_word(&input, head);
+			head = handle_word(&input, head, shell);
 		if (!head)
 			return (NULL);
 	}

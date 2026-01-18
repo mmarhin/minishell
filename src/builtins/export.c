@@ -15,9 +15,11 @@
 static void	print_env(t_shell *shell)
 {
 	int		i;
+	int		j;
 	char	*frase;
 
 	i = 0;
+	j = 0;
 	frase = "declare -x";
 	if (!shell->envp)
 	{
@@ -28,9 +30,19 @@ static void	print_env(t_shell *shell)
 	{
 		ft_putstr_fd(frase, 1);
 		ft_putstr_fd(" ", 1);
-		ft_putstr_fd(shell->envp[i++], 1);
+		while (shell->envp[i][j])
+		{
+			if (j > 0 && shell->envp[i][j - 1] == '=')
+				ft_putstr_fd("\"", 1);
+			ft_putchar_fd(shell->envp[i][j], 1);
+			j++;
+		}
+		i++;
+		j = 0;
+		ft_putstr_fd("\"", 1);
 		ft_putchar_fd('\n', 1);
 	}
+
 	shell->exit_status = 0;
 }
 
@@ -110,6 +122,16 @@ static int	process_export_args(t_shell *shell, char **args)
 	err_cod = 0;
 	while (args[++i])
 	{
+		if (args[i][0] == '-')
+		{
+			ft_putstr_fd("export: -", 2);
+			ft_putchar_fd(args[i][1], 2);
+			ft_putendl_fd(": invalid option", 2);
+			shell->exit_status = 2;
+			err_cod = 2;
+		}
+		else
+		{
 		arg_ret = valid_arg(args[i]);
 		if (arg_ret)
 			export_var(shell, args[i], arg_ret);
@@ -119,6 +141,7 @@ static int	process_export_args(t_shell *shell, char **args)
 			ft_putstr_fd(args[i], 2);
 			ft_putendl_fd("': not a valid identifier", 2);
 			err_cod = 1;
+		}
 		}
 	}
 	return (err_cod);

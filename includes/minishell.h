@@ -75,6 +75,7 @@ typedef struct s_shell
 	char							**envp;
 	int								exit_status;
 	int								interactive;
+	char							*last_path;
 }								t_shell;
 
 typedef struct s_parse_ctx
@@ -153,7 +154,7 @@ void							ft_unset(t_shell *shell, char **args);
 void							ft_exit(char **args, t_shell *shell);
 
 /* tokenizer/tokenizer.c */
-t_token							*tokenize(char *input);
+t_token							*tokenize(char *input, t_shell *shell);
 
 /* tokenizer/token_utils.c */
 t_token							*create_token(t_token_type type, char *value,
@@ -173,7 +174,8 @@ char							*extract_quoted_string(char **str,
 /* tokenizer/tokenizator_operators.c */
 t_token							*create_operator_token(char **str);
 t_token							*handle_operator(char **input, t_token *head);
-t_token							*handle_word(char **input, t_token *head);
+t_token							*handle_word(char **input, t_token *head,
+									t_shell *shell);
 
 /* parser/parser.c */
 t_cmd							*parse(t_token *tokens, t_shell *shell);

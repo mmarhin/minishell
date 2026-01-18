@@ -72,6 +72,22 @@ static char	*process_expansion(char **str, char *result, t_shell *shell)
 	return (free(key), free(value), result);
 }
 
+static char	*handle_backslash(char **src, char *result, t_quote_type quote)
+{
+	(*src)++;
+	if (!**src)
+		return (append_char(result, '\\'));
+	if (quote == NO_QUOTE || **src == '$' || **src == '\\'
+		|| (quote == DOUBLE_QUOTE && **src == '"'))
+	{
+		result = append_char(result, **src);
+		(*src)++;
+	}
+	else
+		result = append_char(result, '\\');
+	return (result);
+}
+
 static char	*expand_vars_loop(char *src, t_shell *shell, t_quote_type quote)
 {
 	char	*result;
@@ -81,7 +97,9 @@ static char	*expand_vars_loop(char *src, t_shell *shell, t_quote_type quote)
 		return (NULL);
 	while (*src)
 	{
-		if (*src == '$' && (quote == DOUBLE_QUOTE || quote == NO_QUOTE))
+		if (*src == '\\' && (quote == DOUBLE_QUOTE || quote == NO_QUOTE))
+			result = handle_backslash(&src, result, quote);
+		else if (*src == '$' && (quote == DOUBLE_QUOTE || quote == NO_QUOTE))
 			result = process_expansion(&src, result, shell);
 		else
 		{

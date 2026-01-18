@@ -17,7 +17,7 @@ static void	process_input(char *line, t_shell *shell)
 	t_token	*tokens;
 	t_cmd	*commands;
 
-	tokens = tokenize(line);
+	tokens = tokenize(line, shell);
 	if (!tokens)
 		return ;
 	commands = parse(tokens, shell);
@@ -36,12 +36,15 @@ static void	process_input(char *line, t_shell *shell)
 
 static int	init_shell(t_shell *shell, char **envp)
 {
+	char	buffer[PATH_MAX];
+
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	shell->envp = copy_environ(envp);
 	if (!shell->envp)
 		return (ft_putendl_fd("Error: failed to copy environment", 2), 1);
 	shell->exit_status = 0;
+	shell->last_path = getcwd(buffer, PATH_MAX);
 	shell->interactive = isatty(STDIN_FILENO);
 	setup_signals_interactive();
 	return (0);

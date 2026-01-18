@@ -53,6 +53,8 @@ static int	check_overflow(char *str, long *result)
 
 static void	exit_numeric_error(char *arg, t_shell *shell)
 {
+	if (shell->interactive)
+		ft_putendl_fd("exit", 1);
 	ft_putstr_fd("exit: ", 2);
 	ft_putstr_fd(arg, 2);
 	ft_putendl_fd(": numeric argument required", 2);
@@ -64,20 +66,21 @@ void	ft_exit(char **args, t_shell *shell)
 {
 	long	exit_code;
 
-	ft_putendl_fd("exit", 1);
+	if (shell->interactive)
+		ft_putendl_fd("exit", 1);
 	if (!args[1])
 	{
 		free_environ(shell->envp);
 		exit(shell->exit_status);
 	}
+	if (!check_overflow(args[1], &exit_code))
+		exit_numeric_error(args[1], shell);
 	if (args[2])
 	{
 		ft_putendl_fd("exit: too many arguments", 2);
 		shell->exit_status = 1;
 		return ;
 	}
-	if (!check_overflow(args[1], &exit_code))
-		exit_numeric_error(args[1], shell);
 	free_environ(shell->envp);
 	exit((unsigned char)exit_code);
 }
