@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:06 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 20:26:20 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 11:23:56 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,15 @@ static void	cd_previous(t_shell *shell)
 	shell->exit_status = 0;
 }
 
+static void	cd_path(t_shell *shell, char *old_path)
+{
+	update_pwd_env(shell, old_path);
+	if (shell->last_path)
+		free(shell->last_path);
+	shell->last_path = old_path;
+	shell->exit_status = 0;
+}
+
 void	ft_cd(char **args, t_shell *shell)
 {
 	char	buffer[PATH_MAX];
@@ -86,7 +95,7 @@ void	ft_cd(char **args, t_shell *shell)
 	if (!args[1] || args[1][0] == '~')
 		return (cd_home(shell));
 	if (args[1][0] == '-' && args[1][1] == '\0' && !args[2])
-		return(cd_previous(shell));
+		return (cd_previous(shell));
 	if (args[2])
 	{
 		ft_putendl_fd("cd: too many arguments", 2);
@@ -101,9 +110,5 @@ void	ft_cd(char **args, t_shell *shell)
 		shell->exit_status = 1;
 		return ;
 	}
-	update_pwd_env(shell, old_path);
-	if (shell->last_path)
-		free(shell->last_path);
-	shell->last_path = old_path;
-	shell->exit_status = 0;
+	cd_path(shell, old_path);
 }
