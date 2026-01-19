@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2026/01/19 12:52:01 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:25:28 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ void							ft_cd(char **args, t_shell *shell);
 int								cd_is_home(char **args);
 void							ft_pwd(t_shell *shell);
 void							ft_echo(char **args, t_shell *shell);
-void							ft_env(t_shell *shell);
+void							ft_env(char **args, t_shell *shell);
 void							ft_export(t_shell *shell, char **args);
 void							ft_unset(t_shell *shell, char **args);
 void							ft_exit(char **args, t_shell *shell);
@@ -176,6 +176,8 @@ char							*extract_quoted_string(char **str,
 t_token							*create_operator_token(char **str);
 t_token							*handle_operator(char **input, t_token *head);
 t_token							*handle_word(char **input, t_token *head,
+									t_shell *shell);
+t_token							*handle_word_mixed(char **input, t_token *head,
 									t_shell *shell);
 t_token							*handle_heredoc_delim(char **input,
 									t_token *head);

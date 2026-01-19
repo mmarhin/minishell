@@ -8,7 +8,8 @@ SRCS    := main.c executor.c executor_utils.c executor_path.c executor_path_util
 		   pipes.c signals.c commands_expansion.c expansion_utils.c \
 		   enviroment.c enviroment_utils.c cleaners.c banner.c \
 		   tokenizator.c token_utils.c tokenizator_helpers.c tokenizator_operators.c \
-		   tokenizator_quotes.c tokenizator_word.c tokenizator_heredoc.c \
+		   tokenizator_quotes.c tokenizator_word.c tokenizator_word_mixed.c \
+		   tokenizator_heredoc.c word_splitting.c word_splitting_utils.c \
 		   parser.c parser_utils.c parser_args.c \
 		   parser_heredoc.c builtins.c cd.c cd_utils.c exit.c echo.c pwd.c env.c export.c \
 		   export_utils.c unset.c

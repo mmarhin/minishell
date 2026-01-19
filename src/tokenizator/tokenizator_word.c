@@ -6,13 +6,16 @@
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/19 16:30:00 by mamarin-          #+#    #+#             */
-/*   Updated: 2026/01/19 12:48:01 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:25:29 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*join_and_free(char *s1, char *s2)
+char	**split_expanded_value(char *expanded);
+void	free_split_words(char **words);
+
+char	*join_and_free(char *s1, char *s2)
 {
 	char	*result;
 
@@ -26,7 +29,7 @@ static char	*join_and_free(char *s1, char *s2)
 	return (result);
 }
 
-static char	*process_quoted(char **input, t_shell *shell, int *has_quotes)
+char	*process_quoted(char **input, t_shell *shell, int *has_quotes)
 {
 	char			*content;
 	char			*expanded;
@@ -50,7 +53,7 @@ static char	*process_quoted(char **input, t_shell *shell, int *has_quotes)
 	return (content);
 }
 
-static char	*process_unquoted(char **input, t_shell *shell)
+char	*process_unquoted(char **input, t_shell *shell)
 {
 	char	*word;
 	char	*expanded;
@@ -63,46 +66,48 @@ static char	*process_unquoted(char **input, t_shell *shell)
 	return (expanded);
 }
 
-static char	*build_token_value(char **input, t_shell *shell, int *has_quotes)
+int	is_only_var_expand(char *input)
 {
-	char	*result;
-	char	*segment;
-
-	result = NULL;
-	*has_quotes = 0;
-	while (**input && !is_space(**input) && !is_operator(**input))
+	if (*input != '$')
+		return (0);
+	input++;
+	if (*input == '?' || *input == '_' || ft_isalpha(*input))
 	{
-		if (**input == '$' && ((*input)[1] == '"' || (*input)[1] == '\''))
-			segment = process_quoted(input, shell, has_quotes);
-		else if (is_quote(**input))
-			segment = process_quoted(input, shell, has_quotes);
+		if (*input == '?')
+			input++;
 		else
-			segment = process_unquoted(input, shell);
-		result = join_and_free(result, segment);
-		if (!result)
-			return (NULL);
+			while (ft_isalnum(*input) || *input == '_')
+				input++;
+		return (*input == '\0' || is_space(*input) || is_operator(*input));
 	}
-	return (result);
+	return (0);
 }
 
 t_token	*handle_word(char **input, t_token *head, t_shell *shell)
 {
-	char			*value;
-	t_token			*new_token;
-	t_quote_type	quote_type;
-	int				has_quotes;
+	char	*expanded;
+	char	**words;
+	int		i;
+	t_token	*tok;
 
-	value = build_token_value(input, shell, &has_quotes);
-	if (!value)
+	if (!is_only_var_expand(*input))
+		return (handle_word_mixed(input, head, shell));
+	expanded = process_unquoted(input, shell);
+	if (!expanded)
 		return (free_tokens(head), NULL);
-	if (has_quotes)
-		quote_type = MIXED_QUOTE;
-	else
-		quote_type = NO_QUOTE;
-	new_token = create_token(TOKEN_WORD, value, quote_type);
-	free(value);
-	if (!new_token)
+	words = split_expanded_value(expanded);
+	free(expanded);
+	if (!words)
 		return (free_tokens(head), NULL);
-	add_token(&head, new_token);
+	i = 0;
+	while (words[i])
+	{
+		tok = create_token(TOKEN_WORD, words[i], NO_QUOTE);
+		if (!tok)
+			return (free_split_words(words), free_tokens(head), NULL);
+		add_token(&head, tok);
+		i++;
+	}
+	free_split_words(words);
 	return (head);
 }
