@@ -6,7 +6,7 @@
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 23:01:06 by lanton-m          #+#    #+#             */
-/*   Updated: 2026/01/19 11:23:56 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 12:56:09 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,24 +56,24 @@ static void	cd_previous(t_shell *shell)
 {
 	char	buffer[PATH_MAX];
 	char	*current;
+	char	*target;
 
-	if (!shell->last_path)
-	{
-		ft_putendl_fd("cd: OLDPWD not set", 2);
-		shell->exit_status = 1;
-		return ;
-	}
 	current = ft_strdup(getcwd(buffer, PATH_MAX));
-	if (chdir(shell->last_path) == -1)
+	if (!shell->last_path)
+		target = current;
+	else
+		target = shell->last_path;
+	if (chdir(target) == -1)
 	{
 		perror("cd");
 		free(current);
 		shell->exit_status = 1;
 		return ;
 	}
-	ft_putendl_fd(shell->last_path, 1);
+	ft_putendl_fd(target, 1);
 	update_pwd_env(shell, current);
-	free(shell->last_path);
+	if (shell->last_path)
+		free(shell->last_path);
 	shell->last_path = current;
 	shell->exit_status = 0;
 }
@@ -92,7 +92,7 @@ void	ft_cd(char **args, t_shell *shell)
 	char	buffer[PATH_MAX];
 	char	*old_path;
 
-	if (!args[1] || args[1][0] == '~')
+	if (cd_is_home(args))
 		return (cd_home(shell));
 	if (args[1][0] == '-' && args[1][1] == '\0' && !args[2])
 		return (cd_previous(shell));

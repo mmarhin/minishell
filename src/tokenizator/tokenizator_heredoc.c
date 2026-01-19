@@ -1,11 +1,11 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizator_word.c                                 :+:      :+:    :+:   */
+/*   tokenizator_heredoc.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/19 16:30:00 by mamarin-          #+#    #+#             */
+/*   Created: 2026/01/19 14:00:00 by mamarin-          #+#    #+#             */
 /*   Updated: 2026/01/19 12:48:01 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -26,44 +26,37 @@ static char	*join_and_free(char *s1, char *s2)
 	return (result);
 }
 
-static char	*process_quoted(char **input, t_shell *shell, int *has_quotes)
+static char	*extract_raw_quoted(char **input, int *has_quotes)
 {
-	char			*content;
-	char			*expanded;
-	t_quote_type	type;
-	int				is_dollar_quote;
+	char	*content;
+	char	quote;
+	char	*chr;
 
-	is_dollar_quote = (**input == '$');
-	if (is_dollar_quote)
-		(*input)++;
-	type = NO_QUOTE;
-	content = extract_quoted_string(input, &type);
-	if (!content)
-		return (NULL);
-	*has_quotes = 1;
-	if (type == DOUBLE_QUOTE)
+	quote = **input;
+	(*input)++;
+	content = ft_strdup("");
+	while (**input && **input != quote)
 	{
-		expanded = expand_string(content, shell, DOUBLE_QUOTE);
-		free(content);
-		return (expanded);
+		chr = ft_substr(*input, 0, 1);
+		content = join_and_free(content, chr);
+		(*input)++;
 	}
+	if (**input == quote)
+		(*input)++;
+	*has_quotes = 1;
 	return (content);
 }
 
-static char	*process_unquoted(char **input, t_shell *shell)
+static char	*extract_raw_char(char **input)
 {
-	char	*word;
-	char	*expanded;
+	char	*segment;
 
-	word = extract_word(input);
-	if (!word)
-		return (NULL);
-	expanded = expand_string(word, shell, NO_QUOTE);
-	free(word);
-	return (expanded);
+	segment = ft_substr(*input, 0, 1);
+	(*input)++;
+	return (segment);
 }
 
-static char	*build_token_value(char **input, t_shell *shell, int *has_quotes)
+static char	*build_raw_value(char **input, int *has_quotes)
 {
 	char	*result;
 	char	*segment;
@@ -73,11 +66,11 @@ static char	*build_token_value(char **input, t_shell *shell, int *has_quotes)
 	while (**input && !is_space(**input) && !is_operator(**input))
 	{
 		if (**input == '$' && ((*input)[1] == '"' || (*input)[1] == '\''))
-			segment = process_quoted(input, shell, has_quotes);
-		else if (is_quote(**input))
-			segment = process_quoted(input, shell, has_quotes);
+			(*input)++;
+		if (is_quote(**input))
+			segment = extract_raw_quoted(input, has_quotes);
 		else
-			segment = process_unquoted(input, shell);
+			segment = extract_raw_char(input);
 		result = join_and_free(result, segment);
 		if (!result)
 			return (NULL);
@@ -85,14 +78,14 @@ static char	*build_token_value(char **input, t_shell *shell, int *has_quotes)
 	return (result);
 }
 
-t_token	*handle_word(char **input, t_token *head, t_shell *shell)
+t_token	*handle_heredoc_delim(char **input, t_token *head)
 {
 	char			*value;
 	t_token			*new_token;
 	t_quote_type	quote_type;
 	int				has_quotes;
 
-	value = build_token_value(input, shell, &has_quotes);
+	value = build_raw_value(input, &has_quotes);
 	if (!value)
 		return (free_tokens(head), NULL);
 	if (has_quotes)

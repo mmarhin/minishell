@@ -6,14 +6,14 @@
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 17:27:49 by lanton-m          #+#    #+#             */
-/*   Updated: 2026/01/19 11:27:43 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 12:22:14 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*read_heredoc_content(char *delim, t_shell *shell, t_quote_type qt);
 int		check_pipe_start(t_token *tokens, t_shell *shell);
+int		fill_heredoc(t_redir *redir, t_token *tk, t_shell *shell);
 
 static int	check_token_word(t_token **tk, t_shell *shell)
 {
@@ -31,24 +31,23 @@ static int	handle_redir(t_token **tk, t_cmd *cmd, t_shell *shell)
 {
 	t_redir			*redir;
 	t_token_type	rtype;
-	t_quote_type	qtype;
 
 	rtype = (*tk)->type;
 	if (check_token_word(tk, shell) < 0)
 		return (-1);
-	qtype = (*tk)->quote;
 	redir = redir_init(rtype);
 	if (!redir)
 		return (shell->exit_status = 1, -1);
-	redir->file = expand_string((*tk)->value, shell, qtype);
-	if (!redir->file)
-		return (free(redir), shell->exit_status = 1, -1);
 	if (rtype == TOKEN_HEREDOC)
 	{
-		redir->heredoc_content = read_heredoc_content(redir->file, shell,
-				qtype);
-		if (!redir->heredoc_content)
-			return (free(redir->file), free(redir), shell->exit_status = 1, -1);
+		if (fill_heredoc(redir, *tk, shell) < 0)
+			return (free(redir), shell->exit_status = 1, -1);
+	}
+	else
+	{
+		redir->file = expand_string((*tk)->value, shell, (*tk)->quote);
+		if (!redir->file)
+			return (free(redir), shell->exit_status = 1, -1);
 	}
 	add_redir_to_cmd(cmd, redir);
 	return (0);
