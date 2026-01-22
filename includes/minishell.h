@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:49:33 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/20 11:56:43 by lanton-m         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:25:28 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
-# define MAX_LINE 256
 
 typedef enum e_token_type
 {
@@ -90,7 +88,7 @@ typedef struct s_pipe_ctx
 {
 	int							pipefd[2];
 	int							prev_fd;
-	pid_t						pids[256];
+	pid_t						pids[1024];
 	int							count;
 }								t_pipe_ctx;
 
@@ -101,9 +99,9 @@ char							*expand_string(char *str, t_shell *shell,
 									t_quote_type quote);
 
 /* executor_path.c */
-char								*find_in_path(const char *cmd, t_shell *shell);
-void								exec_external(char *const argv[],
-										t_shell *shell);
+char							*find_in_path(const char *cmd, t_shell *shell);
+void							exec_external(char *const argv[],
+									t_shell *shell);
 
 /* executor.c */
 void							exec_command(t_cmd *cmd, int background,
@@ -112,7 +110,8 @@ void							execute_single_cmd(t_cmd *current,
 									t_shell *shell);
 
 /* redirections.c */
-int								apply_redirections(t_redir *redirs, t_shell *shell);
+int								apply_redirections(t_redir *redirs,
+									t_shell *shell);
 
 /* pipes.c */
 void							exec_pipeline(t_cmd *cmds, t_shell *shell);
@@ -147,9 +146,10 @@ void							exec_builtin(char **args, int builtin,
 
 /* builtins */
 void							ft_cd(char **args, t_shell *shell);
+int								cd_is_home(char **args);
 void							ft_pwd(t_shell *shell);
 void							ft_echo(char **args, t_shell *shell);
-void							ft_env(t_shell *shell);
+void							ft_env(char **args, t_shell *shell);
 void							ft_export(t_shell *shell, char **args);
 void							ft_unset(t_shell *shell, char **args);
 void							ft_exit(char **args, t_shell *shell);
@@ -177,9 +177,19 @@ t_token							*create_operator_token(char **str);
 t_token							*handle_operator(char **input, t_token *head);
 t_token							*handle_word(char **input, t_token *head,
 									t_shell *shell);
+t_token							*handle_word_mixed(char **input, t_token *head,
+									t_shell *shell);
+t_token							*handle_heredoc_delim(char **input,
+									t_token *head);
 
 /* parser/parser.c */
 t_cmd							*parse(t_token *tokens, t_shell *shell);
+
+/* parser/parser_heredoc.c */
+char							*read_heredoc_content(char *delim,
+									t_shell *shell, t_quote_type qt);
+int								fill_heredoc(t_redir *redir, t_token *tk,
+									t_shell *shell);
 
 /* parser/parser_utils.c */
 t_cmd							*cmd_init(void);
@@ -188,5 +198,9 @@ void							add_arg(t_shell *shell, t_cmd *aux,
 									t_token *tks);
 void							add_redir_to_cmd(t_cmd *cmd, t_redir *redir);
 int								is_redir(t_token_type type);
+int								check_pipe_start(t_token *tokens,
+									t_shell *shell);
 
+/* parser/parser_args.c */
+t_parse_ctx						ctx_init(t_shell *shell);
 #endif

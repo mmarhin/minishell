@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 21:59:48 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/14 12:26:00 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 12:22:14 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,19 @@ int	is_redir(t_token_type type)
 	if (type == TOKEN_HEREDOC || type == TOKEN_REDIR_APPEND
 		|| type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT)
 		return (1);
+	return (0);
+}
+
+int	check_pipe_start(t_token *tokens, t_shell *shell)
+{
+	if (!tokens || tokens->type == TOKEN_PIPE)
+	{
+		if (tokens && tokens->type == TOKEN_PIPE)
+		{
+			ft_putendl_fd("minishell: syntax error near `|'", 2);
+			shell->exit_status = 2;
+		}
+		return (1);
+	}
 	return (0);
 }

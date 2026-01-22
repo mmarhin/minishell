@@ -1,35 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 23:02:19 by lanton-m          #+#    #+#             */
-/*   Updated: 2026/01/19 12:17:57 by mamarin-         ###   ########.fr       */
+/*   Created: 2026/01/19 13:00:00 by mamarin-          #+#    #+#             */
+/*   Updated: 2026/01/19 12:56:09 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_unset(t_shell *shell, char **args)
+int	cd_is_home(char **args)
 {
-	int		i;
-
-	i = 1;
-	if (!shell)
-		return ;
-	shell->exit_status = 0;
-	while (args[i])
-	{
-		if (args[i][0] == '-')
-		{
-			ft_putstr_fd("unset: bad option: ", 2);
-			ft_putendl_fd(args[i], 2);
-			shell->exit_status = 2;
-			return ;
-		}
-		unset_env(shell, args[i]);
-		i++;
-	}
+	if (!args[1])
+		return (1);
+	if (args[1][0] == '~')
+		return (1);
+	if (args[1][0] == '-' && args[1][1] == '-' && args[1][2] == '\0')
+		return (1);
+	return (0);
 }

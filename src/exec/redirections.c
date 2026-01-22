@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 12:00:00 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 16:37:34 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 11:23:56 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,30 +50,24 @@ static int	apply_redir_out(char *file, int append)
 	return (0);
 }
 
+static int	apply_single_redir(t_redir *redir)
+{
+	if (redir->type == TOKEN_REDIR_IN)
+		return (apply_redir_in(redir->file));
+	else if (redir->type == TOKEN_REDIR_OUT)
+		return (apply_redir_out(redir->file, 0));
+	else if (redir->type == TOKEN_REDIR_APPEND)
+		return (apply_redir_out(redir->file, 1));
+	else if (redir->type == TOKEN_HEREDOC)
+		return (apply_heredoc(redir->heredoc_content));
+	return (0);
+}
+
 int	apply_redirections(t_redir *redirs, t_shell *shell)
 {
 	while (redirs)
 	{
-		if (redirs->type == TOKEN_REDIR_IN
-			&& apply_redir_in(redirs->file) < 0)
-		{
-			shell->exit_status = 1;
-			return (-1);
-		}
-		else if (redirs->type == TOKEN_REDIR_OUT
-			&& apply_redir_out(redirs->file, 0) < 0)
-		{
-			shell->exit_status = 1;
-			return (-1);
-		}
-		else if (redirs->type == TOKEN_REDIR_APPEND
-			&& apply_redir_out(redirs->file, 1) < 0)
-		{
-			shell->exit_status = 1;
-			return (-1);
-		}
-		else if (redirs->type == TOKEN_HEREDOC
-		&& apply_heredoc(redirs->heredoc_content) < 0)
+		if (apply_single_redir(redirs) < 0)
 		{
 			shell->exit_status = 1;
 			return (-1);

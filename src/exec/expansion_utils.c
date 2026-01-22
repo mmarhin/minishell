@@ -59,3 +59,41 @@ char	*expand_tilde(char *str, t_shell *shell, t_quote_type quote)
 		result = ft_strjoin(home, str + 1);
 	return (result);
 }
+
+char	*get_var_name(char **str)
+{
+	size_t		key_len;
+	char		*key;
+
+	key_len = 0;
+	if (**str == '?')
+		return ((*str)++, ft_strdup("?"));
+	if (!ft_isalpha((*str)[key_len]) && (*str)[key_len] != '_')
+		return (NULL);
+	while ((*str)[key_len])
+	{
+		if (!ft_isalpha((*str)[key_len]) && !ft_isdigit((*str)[key_len])
+			&& (*str)[key_len] != '_')
+			break ;
+		key_len++;
+	}
+	if (!key_len)
+		return (NULL);
+	key = malloc(sizeof(char) * (key_len + 1));
+	if (!key)
+		return (NULL);
+	ft_strlcpy(key, *str, key_len + 1);
+	*str += key_len;
+	return (key);
+}
+
+char	*expand_variable(char *var_name, t_shell *shell)
+{
+	if (!var_name)
+		return (ft_strdup("$"));
+	if (*var_name == '?')
+		return (ft_itoa(shell->exit_status));
+	if (!get_env(shell, var_name))
+		return (ft_strdup(""));
+	return (ft_strdup(get_env(shell, var_name)));
+}

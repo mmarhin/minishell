@@ -3,85 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamarin- <mamarin-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 17:27:49 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/19 15:32:26 by mamarin-         ###   ########.fr       */
+/*   Updated: 2026/01/19 12:22:14 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*read_heredoc_content(char *delim, t_shell *shell, t_quote_type qt)
+int		check_pipe_start(t_token *tokens, t_shell *shell);
+int		fill_heredoc(t_redir *redir, t_token *tk, t_shell *shell);
+
+static int	check_token_word(t_token **tk, t_shell *shell)
 {
-	char	*content;
-	char	*line;
-	char	*tmp;
-	size_t	len;
-
-	content = ft_strdup("");
-	if (!content)
-		return (NULL);
-	while (1)
-	{
-		if (shell->interactive)
-			line = readline("> ");
-		else
-			line = get_next_line(STDIN_FILENO);
-		if (!line)
-			break ;
-		len = ft_strlen(line);
-		if (!shell->interactive && len > 0 && line[len - 1] == '\n')
-			line[len - 1] = '\0';
-		if (ft_strcmp(line, delim) == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (qt == NO_QUOTE)
-		{
-			tmp = expand_string(line, shell, DOUBLE_QUOTE);
-			free(line);
-			line = tmp;
-		}
-		tmp = ft_strjoin(content, line);
-		free(content);
-		free(line);
-		content = ft_strjoin(tmp, "\n");
-		free(tmp);
-		if (!content)
-			return (NULL);
-	}
-	return (content);
-}
-
-static int	handle_redir(t_token **tokens, t_cmd *cmd, t_shell *shell)
-{
-	t_redir			*redir;
-	t_token_type	redir_type;
-	t_quote_type	quote_type;
-
-	redir_type = (*tokens)->type;
-	*tokens = (*tokens)->next;
-	if (!*tokens || (*tokens)->type != TOKEN_WORD)
+	*tk = (*tk)->next;
+	if (!*tk || (*tk)->type != TOKEN_WORD)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token", 2);
 		shell->exit_status = 2;
 		return (-1);
 	}
-	quote_type = (*tokens)->quote;
-	redir = redir_init(redir_type);
+	return (0);
+}
+
+static int	handle_redir(t_token **tk, t_cmd *cmd, t_shell *shell)
+{
+	t_redir			*redir;
+	t_token_type	rtype;
+
+	rtype = (*tk)->type;
+	if (check_token_word(tk, shell) < 0)
+		return (-1);
+	redir = redir_init(rtype);
 	if (!redir)
 		return (shell->exit_status = 1, -1);
-	redir->file = expand_string((*tokens)->value, shell, quote_type);
-	if (!redir->file)
-		return (free(redir), shell->exit_status = 1, -1);
-	if (redir_type == TOKEN_HEREDOC)
+	if (rtype == TOKEN_HEREDOC)
 	{
-		redir->heredoc_content = read_heredoc_content(redir->file, shell,
-				quote_type);
-		if (!redir->heredoc_content)
-			return (free(redir->file), free(redir), shell->exit_status = 1, -1);
+		if (fill_heredoc(redir, *tk, shell) < 0)
+			return (free(redir), shell->exit_status = 1, -1);
+	}
+	else
+	{
+		redir->file = expand_string((*tk)->value, shell, (*tk)->quote);
+		if (!redir->file)
+			return (free(redir), shell->exit_status = 1, -1);
 	}
 	add_redir_to_cmd(cmd, redir);
 	return (0);
@@ -100,20 +66,6 @@ static void	handle_pipe(t_cmd **first, t_cmd **last, t_cmd **current)
 		*last = *current;
 	}
 	*current = cmd_init();
-}
-
-static int	check_pipe_start(t_token *tokens, t_shell *shell)
-{
-	if (!tokens || tokens->type == TOKEN_PIPE)
-	{
-		if (tokens && tokens->type == TOKEN_PIPE)
-		{
-			ft_putendl_fd("minishell: syntax error near `|'", 2);
-			shell->exit_status = 2;
-		}
-		return (1);
-	}
-	return (0);
 }
 
 static int	process_token(t_token **tk, t_cmd **cur, t_parse_ctx *ctx)
@@ -137,9 +89,7 @@ t_cmd	*parse(t_token *tokens, t_shell *shell)
 
 	if (check_pipe_start(tokens, shell))
 		return (NULL);
-	ctx.first = NULL;
-	ctx.last = NULL;
-	ctx.shell = shell;
+	ctx = ctx_init(shell);
 	current = cmd_init();
 	if (!current)
 		return (NULL);

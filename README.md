@@ -69,22 +69,13 @@ minishell/
 
 ---
 
-## 🧪 Tests
-
-```bash
-# Ejecutar tests con minishell_tester
-cd minishell_tester && ./tester
-```
-
----
-
 ## ✨ Autores
 
 | Autor | GitHub |
 |-------|--------|
 | **Mario Marín** (mmarhin) | [@mmarhin](https://github.com/mmarhin) |
-| **Luis Antón** (lanton-m) | [@lanton-m](https://github.com/lanton-m) |
+| **Luis Antón** (lanton-m) | [@coderris](https://github.com/coderris) |
 
 ---
 
-*42 Málaga - Diciembre 2024*
+*42 Málaga - Enero 2026*

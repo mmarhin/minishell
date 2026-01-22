@@ -64,3 +64,13 @@ void	add_arg(t_shell *shell, t_cmd *aux, t_token *tokens)
 		free(aux->args);
 	aux->args = new_args;
 }
+
+t_parse_ctx	ctx_init(t_shell *shell)
+{
+	t_parse_ctx	aux;
+
+	aux.first = NULL;
+	aux.last = NULL;
+	aux.shell = shell;
+	return (aux);
+}

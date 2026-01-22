@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lanton-m <lanton-m@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: mamarin- <mamarin-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 22:47:10 by lanton-m          #+#    #+#             */
-/*   Updated: 2025/12/15 20:30:07 by lanton-m         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:13:49 by mamarin-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	exec_builtin(char **args, int builtin, t_shell *shell)
 	if (builtin == 3)
 		ft_pwd(shell);
 	if (builtin == 4)
-		ft_env(shell);
+		ft_env(args, shell);
 	if (builtin == 5)
 		ft_export(shell, args);
 	if (builtin == 6)
