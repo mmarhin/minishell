@@ -26,12 +26,16 @@ static void	process_input(char *line, t_shell *shell)
 		free_tokens(tokens);
 		return ;
 	}
+	shell->tokens = tokens;
+	shell->cmds = commands;
 	if (commands->next)
 		exec_pipeline(commands, shell);
 	else
 		execute_single_cmd(commands, shell);
 	free_tokens(tokens);
 	free_cmd_list(commands);
+	shell->tokens = NULL;
+	shell->cmds = NULL;
 }
 
 static int	init_shell(t_shell *shell, char **envp)
@@ -43,6 +47,8 @@ static int	init_shell(t_shell *shell, char **envp)
 		return (ft_putendl_fd("Error: failed to copy environment", 2), 1);
 	shell->exit_status = 0;
 	shell->last_path = NULL;
+	shell->tokens = NULL;
+	shell->cmds = NULL;
 	shell->interactive = isatty(STDIN_FILENO);
 	setup_signals_interactive();
 	return (0);
@@ -91,5 +97,6 @@ int	main(int argc, char **argv, char **envp)
 		free(shell.last_path);
 	if (shell.interactive)
 		ft_putendl_fd("exit", 1);
+	rl_clear_history();
 	return (shell.exit_status);
 }

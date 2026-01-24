@@ -74,7 +74,7 @@ void	exec_external(char *const argv[], t_shell *shell)
 	{
 		ft_putstr_fd(argv[0], 2);
 		ft_putendl_fd(": command not found", 2);
-		exit(127);
+		cleanup_child(shell, 127);
 	}
 	execve(path, argv, shell->envp);
 	ft_putstr_fd(argv[0], 2);
@@ -82,6 +82,6 @@ void	exec_external(char *const argv[], t_shell *shell)
 	ft_putendl_fd(strerror(errno), 2);
 	free(path);
 	if (errno == ENOENT)
-		exit(127);
-	exit(126);
+		cleanup_child(shell, 127);
+	cleanup_child(shell, 126);
 }

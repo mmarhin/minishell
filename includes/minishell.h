@@ -75,6 +75,8 @@ typedef struct s_shell
 	int								exit_status;
 	int								interactive;
 	char							*last_path;
+	struct s_token					*tokens;
+	struct s_cmd					*cmds;
 }								t_shell;
 
 typedef struct s_parse_ctx
@@ -127,6 +129,7 @@ void							handle_sigint(int sig);
 void							ft_freesplit(char **split);
 void							free_environ(char **envp);
 void							free_cmd_list(t_cmd *commands);
+void							cleanup_child(t_shell *shell, int status);
 
 /* banner.c */
 void							print_banner(void);

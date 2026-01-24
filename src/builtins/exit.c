@@ -58,6 +58,10 @@ static void	exit_numeric_error(char *arg, t_shell *shell)
 	ft_putstr_fd("exit: ", 2);
 	ft_putstr_fd(arg, 2);
 	ft_putendl_fd(": numeric argument required", 2);
+	if (shell->tokens)
+		free_tokens(shell->tokens);
+	if (shell->cmds)
+		free_cmd_list(shell->cmds);
 	free_environ(shell->envp);
 	if (shell->last_path)
 		free(shell->last_path);
@@ -72,6 +76,10 @@ void	ft_exit(char **args, t_shell *shell)
 		ft_putendl_fd("exit", 1);
 	if (!args[1])
 	{
+		if (shell->tokens)
+			free_tokens(shell->tokens);
+		if (shell->cmds)
+			free_cmd_list(shell->cmds);
 		free_environ(shell->envp);
 		if (shell->last_path)
 			free(shell->last_path);
@@ -85,6 +93,10 @@ void	ft_exit(char **args, t_shell *shell)
 		shell->exit_status = 1;
 		return ;
 	}
+	if (shell->tokens)
+		free_tokens(shell->tokens);
+	if (shell->cmds)
+		free_cmd_list(shell->cmds);
 	free_environ(shell->envp);
 	if (shell->last_path)
 		free(shell->last_path);

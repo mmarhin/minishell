@@ -36,18 +36,18 @@ static void	exec_pipe_child(t_cmd *cmd, t_shell *shell, t_pipe_ctx *ctx,
 	signal(SIGQUIT, SIG_DFL);
 	setup_pipe_fds(ctx, is_last);
 	if (cmd->redirs && apply_redirections(cmd->redirs, shell) < 0)
-		exit(1);
+		cleanup_child(shell, 1);
 	if (!cmd->args || !cmd->args[0])
-		exit(0);
+		cleanup_child(shell, 0);
 	builtin_id = is_builtin(cmd->args[0]);
 	if (builtin_id)
 	{
 		exec_builtin(cmd->args, builtin_id, shell);
-		exit(shell->exit_status);
+		cleanup_child(shell, shell->exit_status);
 	}
 	exec_external(cmd->args, shell);
 	perror(cmd->args[0]);
-	exit(127);
+	cleanup_child(shell, 127);
 }
 
 static void	wait_all_pids(t_pipe_ctx *ctx, t_shell *shell)

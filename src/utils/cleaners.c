@@ -63,3 +63,17 @@ void	free_cmd_list(t_cmd *commands)
 		commands = tmp;
 	}
 }
+
+void	cleanup_child(t_shell *shell, int status)
+{
+	if (shell->tokens)
+		free_tokens(shell->tokens);
+	if (shell->cmds)
+		free_cmd_list(shell->cmds);
+	if (shell->envp)
+		free_environ(shell->envp);
+	if (shell->last_path)
+		free(shell->last_path);
+	rl_clear_history();
+	exit(status);
+}

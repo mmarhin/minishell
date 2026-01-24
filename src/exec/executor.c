@@ -20,10 +20,10 @@ static void	exec_child(t_cmd *cmd, t_shell *shell)
 {
 	setup_child_signals();
 	if (cmd->redirs && apply_redirections(cmd->redirs, shell) < 0)
-		exit(1);
+		cleanup_child(shell, 1);
 	exec_external(cmd->args, shell);
 	perror(cmd->args[0]);
-	exit(EXIT_FAILURE);
+	cleanup_child(shell, EXIT_FAILURE);
 }
 
 void	exec_command(t_cmd *cmd, int background, t_shell *shell)
